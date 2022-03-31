@@ -5,19 +5,23 @@ part 'base_model.g.dart';
 @JsonSerializable()
 class BaseModel {
 
-  @JsonKey(fromJson: _fromJson, toJson: _toJson )
-  final int error;
+  //@JsonKey(fromJson: _fromJson, toJson: _toJson)
+  final String status;
   final String msg;
   final dynamic data;
 
-  BaseModel({required this.error, required this.msg,this.data});
+  BaseModel({
+    required this.status,
+    required this.msg,
+    this.data
+  });
 
   factory BaseModel.fromJson(Map<String, dynamic> json) => _$BaseModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$BaseModelToJson(this);
 
-  static int _fromJson(String error) => int.parse(error);
-  static String _toJson(int error) => error.toString();
+  // static int _fromJson(String status) => int.parse(status);
+  // static String _toJson(int status) => status.toString();
 }
 
 /*

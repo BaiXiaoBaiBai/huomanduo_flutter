@@ -7,13 +7,13 @@ part of 'base_model.dart';
 // **************************************************************************
 
 BaseModel _$BaseModelFromJson(Map<String, dynamic> json) => BaseModel(
-      error: BaseModel._fromJson(json['error'] as String),
+      status: json['status'] as String,
       msg: json['msg'] as String,
       data: json['data'],
     );
 
 Map<String, dynamic> _$BaseModelToJson(BaseModel instance) => <String, dynamic>{
-      'error': BaseModel._toJson(instance.error),
+      'status': instance.status,
       'msg': instance.msg,
       'data': instance.data,
     };

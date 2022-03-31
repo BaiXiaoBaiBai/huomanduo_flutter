@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'home/homepage.dart';
-import 'mine/mine.dart';
+import 'mine/controller/mine.dart';
 import '../gen_a/A.dart';
 
 class IndexPage extends StatefulWidget {
@@ -40,13 +40,13 @@ class _IndexPageState extends State<IndexPage> {
 
 List<BottomNavigationBarItem> items = [
   BottomNavigationBarItem(
-    icon: Image.asset(A.tabbar_home, width: 32,),
-    activeIcon: Image.asset(A.tabbar_home_highlighted, width: 32,),
+    icon: Image.asset(A.assets_images_tabbar_home, width: 32,),
+    activeIcon: Image.asset(A.assets_images_tabbar_home_highlighted, width: 32,),
     label: "首页",
   ),
   BottomNavigationBarItem(
-    icon: Image.asset(A.tabbar_profile, width: 32, gaplessPlayback: true,),
-    activeIcon: Image.asset(A.tabbar_profile_highlighted, width: 32, gaplessPlayback: true),
+    icon: Image.asset(A.assets_images_tabbar_profile, width: 32, gaplessPlayback: true,),
+    activeIcon: Image.asset(A.assets_images_tabbar_profile_highlighted, width: 32, gaplessPlayback: true),
     label: "我的",
   ),
 ];

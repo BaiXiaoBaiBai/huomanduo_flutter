@@ -54,12 +54,12 @@ dependencies:
   #弹窗
   adaptive_dialog: ^1.4.0
 
-  # flutter_swiper : '^1.0.2'#轮播图
-
   #json和model互转
   json_serializable: ^6.1.5
   json_annotation: ^4.4.0
   build_runner: ^2.1.8
+
+  flutter_swiper: ^1.1.6 #轮播图
 
 
 dev_dependencies:

@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:huomanduo_owner/utils/screen_fit.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -9,6 +10,11 @@ class HomePage extends StatefulWidget {
 
 class _MineState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
+
+  @override
+  void initState() {
+    ScreenFit.initialize();
+  }
 
   @override
   Widget build(BuildContext context) {

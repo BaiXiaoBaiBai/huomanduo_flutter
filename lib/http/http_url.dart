@@ -9,8 +9,12 @@ class HttpUrl {
 
   static const String BASE_TOKEN = "";
 
-  static const String baseUrl = 'http://47.93.220.253/index.php/';
+  //static const String baseUrl = 'http://47.93.220.253/index.php/';
 
   static const String userConfig_url = 'mobile/Userconfig';
 
+  static const String baseUrl = 'http://shounabar.com/';
+
+  static const String userLogin_URL = 'user/user-login';
+  static const String userInfo_URL = 'user/user-info';
 }
