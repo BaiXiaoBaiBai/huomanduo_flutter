@@ -10,4 +10,15 @@ class HexColor extends Color {
   }
 
   HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
+
+
+  static final String HMD_White="#FFFFFF";
+  static final String HMD_333333="#333333";
+  static final String HMD_666666="#666666";
+  static final String HMD_999999="#999999";
+  static final String HMD_F7F7F7="#F7F7F7";
+  static final String HMD_DCDCDC="#DCDCDC";
+
+
+
 }

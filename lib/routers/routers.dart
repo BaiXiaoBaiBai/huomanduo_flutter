@@ -5,7 +5,7 @@ import 'router_handler.dart';
 class Routes {
 
   static String homepage = "/homepage";  //定义路由
-  static String addArticle = "/addArticle";  //添加文章
+  static String myInfo = "/myInfo";  //我的信息
   static String addDynamic = "/addDynamic";  //添加动态
 
   static void configureRoutes(FluroRouter router) { //处理未匹配到路由时展示的页面
@@ -16,7 +16,7 @@ class Routes {
 
     //注册路由并指向所对应的handler(Handler对应的是界面)
     router.define(homepage, handler: indexPageHandler);
-    // router.define(addArticle, handler: addArticleHandler);
+    router.define(myInfo, handler: myInfoHandler);
     // router.define(addDynamic, handler: addDynamicHandler);
 
   }

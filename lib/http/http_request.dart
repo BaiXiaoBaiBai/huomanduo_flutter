@@ -114,8 +114,7 @@ class HttpRequest {
     );
     print("post请求结果：${HttpUrl.baseUrl + path}\njsonString == ${response.data}");
     //BaseModel baseModel = BaseModel.fromJson(jsonDecode(response.data));
-    BaseModel baseModel = BaseModel.fromJson(response.data);
-
+     BaseModel baseModel = BaseModel.fromJson(response.data);
     return baseModel;
   }
 

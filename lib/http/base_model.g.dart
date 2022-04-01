@@ -7,7 +7,7 @@ part of 'base_model.dart';
 // **************************************************************************
 
 BaseModel _$BaseModelFromJson(Map<String, dynamic> json) => BaseModel(
-      status: json['status'] as String,
+      status: json['status'] as int,
       msg: json['msg'] as String,
       data: json['data'],
     );

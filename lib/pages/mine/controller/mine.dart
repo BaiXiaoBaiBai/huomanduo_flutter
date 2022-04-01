@@ -1,11 +1,14 @@
 
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:huomanduo_owner/gen_a/A.dart';
-import 'package:huomanduo_owner/utils/screen_fit.dart';
-import 'package:huomanduo_owner/utils/toast_util.dart';
+import 'package:huomanduo_owner/pages/mine/model/user_model.dart';
 import '../../../http/base_model.dart';
 import '../../../http/http_request.dart';
 import '../../../http/http_url.dart';
+import '../../../routers/Application.dart';
+import '../../../routers/routers.dart';
 
 
 class MinePage extends StatefulWidget {
@@ -16,22 +19,32 @@ class MinePage extends StatefulWidget {
 class _MineState extends State<MinePage>
     with AutomaticKeepAliveClientMixin {
 
-  @override
-  void initState() {
+  late UserModel _userModel;
 
-    _getList();
+  void initState() {
+    _userModel = UserModel(
+        user_id: 0,
+        user_name: "",
+        user_type: 0,
+        avatar_url: "https://desk-fd.zol-img.com.cn/t_s960x600c5/g6/M00/03/0E/ChMkKWDZLXSICljFAC1U9uUHfekAARQfgG_oL0ALVUO515.jpg",
+        mobile: ""
+    );
+    _requestUserInfo();
   }
 
-  Future _getList() async {
+  Future _requestUserInfo() async {
 
     Map<String,dynamic> params = new Map();
-    params["token"] = "eyJhbGciOiJSUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE2NDg3MzQ2OTd9.6F_hhQBO9myP77VeUzDS9qJfTVTsFW17TNylJ-6028Rhfw9ZsLV-ElfjYByn1ttvmnaNmeSYq_KovKf_6xPunVhTJz6ufjK_zSrgLJJDZAP9D7g6cANRA1k1hxC5ZdL-AK0_x3IipjpFeUmqzCgA0htLd3UzBQhR3xxFBH3Y-mE";
+    params["token"] = "eyJhbGciOiJSUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE2NDg4MTIwMjZ9.4GnrOYSKvBVUILE7IEvpqombouUPtxMKrJMTPQ8a1r2eDqCDgAqCi9bCQHsHC8trEmN9qT9FEALurysv6x7qyc5lgqS-Gpab_1nZOWpRMXZcjQOyp-PtdNltbq_WpR6AcevIGqTH5_JPXD0WquuOhfEZ-CZtRDJzG-fCsmKpJFI";
     // params["companyId"] = "1";
     // params["userId"] = "9";
-    // final result = await HttpRequest().post(HttpUrl.userConfig_url, params: params);
+    // final result = await HttpRequest().post(HttpUrl.userInfo_URL, params: params);
     final BaseModel baseModel = await HttpRequest().post(HttpUrl.userInfo_URL, params: params);
+    _userModel = UserModel.fromJson(baseModel.data);
+    setState(() {});
+
     // BaseModel baseModel = BaseModel.fromJson(jsonDecode(result));
-    print("baeModel == ${baseModel.data}");
+    //print("baeModel == ${baseModel.data}");
 
     //print("data == ${result['data']}");
     // UserModel userModel = UserModel.fromJson(baseModel.data);
@@ -57,48 +70,47 @@ class _MineState extends State<MinePage>
               children: [
                 Expanded(
                   child: Container(
-                    height: ScreenFit.getWidth(130),
+                    height: 170.w,
                     color: Colors.black12,
                     child: Stack(
                       children: [
                         Positioned(
-                            left:ScreenFit.getWidth(15),
-                            top: ScreenFit.getWidth(50),
-                            width: ScreenFit.getWidth(60),
-                            height: ScreenFit.getWidth(60),
+                            left:15.w,
+                            top: 80.w,
+                            width: 60.w,
+                            height: 60.w,
                             child: CircleAvatar(
-                              radius: ScreenFit.getWidth(30),
+                              radius: 30.w,
                               backgroundImage: NetworkImage("https://desk-fd.zol-img.com.cn/t_s960x600c5/g6/M00/03/0E/ChMkKWDZLXSICljFAC1U9uUHfekAARQfgG_oL0ALVUO515.jpg")
                             )
                         ),
                         Positioned(
-                            left: ScreenFit.getWidth(100),
-                            top: ScreenFit.getWidth(60),
-                            right: ScreenFit.getWidth(50),
-                            height: ScreenFit.getWidth(25),
-                            child: Text("白小白",style: TextStyle(fontSize: 15,color: Colors.black,fontWeight: FontWeight.bold),)
+                            left: 100.w,
+                            top: 90.w,
+                            right: 50.w,
+                            height: 25.w,
+                            child: Text(_userModel.user_name,style: TextStyle(fontSize: 15.sp,color: Colors.black,fontWeight: FontWeight.bold),)
                         ),
                         Positioned(
-                          left: ScreenFit.getWidth(100),
-                            top: ScreenFit.getWidth(90),
-                            right: ScreenFit.getWidth(0),
-                            height: ScreenFit.getWidth(20),
-                            child: Text("15633671843",style: TextStyle(fontSize: 15,color: Colors.grey),)
-                        ),
-                        Positioned(
-                          top: ScreenFit.getWidth(50),
+                          left: 100.w,
+                            top: 115.w,
                             right: 0,
-                            height: ScreenFit.getWidth(60),
-                            width: ScreenFit.getWidth(30),
+                            height: 20.w,
+                            child: Text(_userModel.mobile,style: TextStyle(fontSize: 15.sp,color: Colors.grey),)
+                        ),
+                        Positioned(
+                          top: 60.w,
+                            right: 0,
+                            height: 100.w,
+                            width: 30.w,
                             child: GestureDetector(
                               child: Image.asset(A.assets_images_right_arrow),
                               onTap: (){
-                                ToastUtil.show("msgStr");
+                                Application.router.navigateTo(context, Routes.myInfo, transition: TransitionType.native);
                               },
                             )
                         )
                       ],
-
 
                     )
                   )
@@ -133,6 +145,7 @@ class _MineState extends State<MinePage>
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
+
 }
 
 /*

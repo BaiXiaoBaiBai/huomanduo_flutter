@@ -6,7 +6,7 @@ part 'base_model.g.dart';
 class BaseModel {
 
   //@JsonKey(fromJson: _fromJson, toJson: _toJson)
-  final String status;
+  final int status;
   final String msg;
   final dynamic data;
 
