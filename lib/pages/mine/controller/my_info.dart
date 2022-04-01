@@ -1,5 +1,7 @@
 
 
+import 'dart:io';
+
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,6 +24,7 @@ class _MyInfoState extends State<MyInfoPage>
     with AutomaticKeepAliveClientMixin {
 
   late UserModel _userModel;
+  late ImageProvider _iconImage;
 
   void initState() {
     _userModel = UserModel(
@@ -31,6 +34,7 @@ class _MyInfoState extends State<MyInfoPage>
         avatar_url: "https://desk-fd.zol-img.com.cn/t_s960x600c5/g6/M00/03/0E/ChMkKWDZLXSICljFAC1U9uUHfekAARQfgG_oL0ALVUO515.jpg",
         mobile: ""
     );
+    _iconImage = NetworkImage("https://desk-fd.zol-img.com.cn/t_s960x600c5/g6/M00/03/0E/ChMkKWDZLXSICljFAC1U9uUHfekAARQfgG_oL0ALVUO515.jpg");
     _requestUserInfo();
   }
 
@@ -115,7 +119,7 @@ class _MyInfoState extends State<MyInfoPage>
                 right: 50.w,
                 child: CircleAvatar(
                     radius: 25.w,
-                    backgroundImage: NetworkImage("https://desk-fd.zol-img.com.cn/t_s960x600c5/g6/M00/03/0E/ChMkKWDZLXSICljFAC1U9uUHfekAARQfgG_oL0ALVUO515.jpg")
+                    backgroundImage: _iconImage,
                 )
             ),
             Positioned(
@@ -126,8 +130,6 @@ class _MyInfoState extends State<MyInfoPage>
                 child: GestureDetector(
                   child: Image.asset(A.assets_images_right_arrow),
                   onTap: () async {
-                    //ToastUtil.show("发布");
-                    //Application.router.navigateTo(context, Routes.addArticle);
                     final result = await showConfirmationDialog<int>(
                       context: context,
                       title: "请选择",
@@ -139,12 +141,14 @@ class _MyInfoState extends State<MyInfoPage>
                     );
                     switch(result){
                       case 1 :
-                        ImagePicker().pickImage(source: ImageSource.camera);
-
+                        takePhoto();
                         break;
                       case 2 :
-
-                        ImagePicker().pickImage(source: ImageSource.gallery);
+                        // final imagePicker = await ImagePicker().pickImage(source: ImageSource.gallery);
+                        // _iconImage = File(imagePicker!.path) as Image;
+                        // print("111111111\n22222222222222222222222222222\n33333333333");
+                        // setState(() {});
+                        photoLibrary();
                         break;
                     }
                   },
@@ -154,6 +158,20 @@ class _MyInfoState extends State<MyInfoPage>
         )
     );
   }
+
+  Future takePhoto() async {
+    //_iconImage = await ImagePicker().pickImage(source: ImageSource.camera) as Image;
+    print("111111111\n22222222222222222222222222222\n33333333333");
+    setState(() {});
+  }
+
+  Future photoLibrary() async {
+    XFile? xFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    _iconImage = ImageProvider().
+    print("111111111\n22222222222222222222222222222\n33333333333");
+    setState(() {});
+  }
+
 
   // 用户名cell
   _userNameCell() {
