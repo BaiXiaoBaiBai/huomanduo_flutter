@@ -18,6 +18,7 @@ class HexColor extends Color {
   static final String HMD_999999="#999999";
   static final String HMD_F7F7F7="#F7F7F7";
   static final String HMD_DCDCDC="#DCDCDC";
+  static final String HMD_1A70FB="#1A70FB";
 
 
 

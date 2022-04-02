@@ -24,7 +24,7 @@ class _MyInfoState extends State<MyInfoPage>
     with AutomaticKeepAliveClientMixin {
 
   late UserModel _userModel;
-  late ImageProvider _iconImage;
+  late Image _iconImage;
 
   void initState() {
     _userModel = UserModel(
@@ -34,7 +34,7 @@ class _MyInfoState extends State<MyInfoPage>
         avatar_url: "https://desk-fd.zol-img.com.cn/t_s960x600c5/g6/M00/03/0E/ChMkKWDZLXSICljFAC1U9uUHfekAARQfgG_oL0ALVUO515.jpg",
         mobile: ""
     );
-    _iconImage = NetworkImage("https://desk-fd.zol-img.com.cn/t_s960x600c5/g6/M00/03/0E/ChMkKWDZLXSICljFAC1U9uUHfekAARQfgG_oL0ALVUO515.jpg");
+    _iconImage = Image.network("https://desk-fd.zol-img.com.cn/t_s960x600c5/g6/M00/03/0E/ChMkKWDZLXSICljFAC1U9uUHfekAARQfgG_oL0ALVUO515.jpg", fit: BoxFit.cover,);
     _requestUserInfo();
   }
 
@@ -117,9 +117,9 @@ class _MyInfoState extends State<MyInfoPage>
                 width: 50.w,
                 height: 50.w,
                 right: 50.w,
-                child: CircleAvatar(
-                    radius: 25.w,
-                    backgroundImage: _iconImage,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(25.w),
+                  child: _iconImage,
                 )
             ),
             Positioned(
@@ -144,10 +144,6 @@ class _MyInfoState extends State<MyInfoPage>
                         takePhoto();
                         break;
                       case 2 :
-                        // final imagePicker = await ImagePicker().pickImage(source: ImageSource.gallery);
-                        // _iconImage = File(imagePicker!.path) as Image;
-                        // print("111111111\n22222222222222222222222222222\n33333333333");
-                        // setState(() {});
                         photoLibrary();
                         break;
                     }
@@ -160,15 +156,14 @@ class _MyInfoState extends State<MyInfoPage>
   }
 
   Future takePhoto() async {
-    //_iconImage = await ImagePicker().pickImage(source: ImageSource.camera) as Image;
-    print("111111111\n22222222222222222222222222222\n33333333333");
+    XFile? xFile = await ImagePicker().pickImage(source: ImageSource.camera);
+    _iconImage = Image.asset(xFile!.path,fit: BoxFit.cover);
     setState(() {});
   }
 
   Future photoLibrary() async {
     XFile? xFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-    _iconImage = ImageProvider().
-    print("111111111\n22222222222222222222222222222\n33333333333");
+    _iconImage = Image.asset(xFile!.path,fit: BoxFit.cover);
     setState(() {});
   }
 
@@ -248,8 +243,7 @@ class _MyInfoState extends State<MyInfoPage>
         )
     );
   }
-
-
+  
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;

@@ -43,9 +43,9 @@ dependencies:
   #屏幕适配
   flutter_screenutil: ^5.3.1
   #富文本编辑器
-  zefyr: ^1.0.0-rc.5
+  #zefyr: ^1.0.0-rc.5
 
-  extended_text_field: ^10.0.0
+  #extended_text_field: ^10.0.0
 
   image_picker: ^0.8.4+11
 
@@ -60,6 +60,15 @@ dependencies:
   build_runner: ^2.1.8
 
   flutter_swiper: ^1.1.6 #轮播图
+
+  #数据存储
+  shared_preferences: ^2.0.13
+
+  #广播，通知
+  event_bus: ^2.0.0
+
+  #上拉下拉刷新
+  #pull_to_refresh: ^2.0.0
 
 
 dev_dependencies:

@@ -6,7 +6,7 @@ class Routes {
 
   static String homepage = "/homepage";  //定义路由
   static String myInfo = "/myInfo";  //我的信息
-  static String addDynamic = "/addDynamic";  //添加动态
+  static String login = "/addDynamic";  //登录
 
   static void configureRoutes(FluroRouter router) { //处理未匹配到路由时展示的页面
     router.notFoundHandler = Handler(
@@ -17,7 +17,7 @@ class Routes {
     //注册路由并指向所对应的handler(Handler对应的是界面)
     router.define(homepage, handler: indexPageHandler);
     router.define(myInfo, handler: myInfoHandler);
-    // router.define(addDynamic, handler: addDynamicHandler);
+    router.define(login, handler: loginHandler);
 
   }
 
