@@ -1,14 +1,15 @@
 
-
 import 'dart:io';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:huomanduo_owner/common/base_app_bar.dart';
 import 'package:huomanduo_owner/http/http_request.dart';
 import 'package:huomanduo_owner/utils/hex_color.dart';
 import 'package:huomanduo_owner/utils/toast_util.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../gen_a/A.dart';
 import '../../../http/base_model.dart';
@@ -41,7 +42,8 @@ class _MyInfoState extends State<MyInfoPage>
   Future _requestUserInfo() async {
 
     Map<String,dynamic> params = new Map();
-    params["token"] = "eyJhbGciOiJSUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE2NDg4MTIwMjZ9.4GnrOYSKvBVUILE7IEvpqombouUPtxMKrJMTPQ8a1r2eDqCDgAqCi9bCQHsHC8trEmN9qT9FEALurysv6x7qyc5lgqS-Gpab_1nZOWpRMXZcjQOyp-PtdNltbq_WpR6AcevIGqTH5_JPXD0WquuOhfEZ-CZtRDJzG-fCsmKpJFI";
+    SharedPreferences shared = await SharedPreferences.getInstance();
+    params["token"] = shared.getString("token");
 
     final BaseModel baseModel = await HttpRequest().post(HttpUrl.userInfo_URL, params: params);
     _userModel = UserModel.fromJson(baseModel.data);
@@ -51,11 +53,12 @@ class _MyInfoState extends State<MyInfoPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("我的资料",style: TextStyle(fontSize: 17.sp,color: HexColor(HexColor.HMD_333333)),),
-        backgroundColor: HexColor(HexColor.HMD_White),
-        elevation: 0, //去掉底部的阴影
-      ),
+      // appBar: AppBar(
+      //   title: Text("我的资料",style: TextStyle(fontSize: 17.sp,color: HexColor(HexColor.HMD_333333)),),
+      //   backgroundColor: HexColor(HexColor.HMD_White),
+      //   elevation: 0, //去掉底部的阴影
+      // ),
+      appBar: BaseAppBar(titleStr: "我的资料"),
       body: Column(
         children: [
           Container(
@@ -157,13 +160,15 @@ class _MyInfoState extends State<MyInfoPage>
 
   Future takePhoto() async {
     XFile? xFile = await ImagePicker().pickImage(source: ImageSource.camera);
-    _iconImage = Image.asset(xFile!.path,fit: BoxFit.cover);
+    //_iconImage = Image.asset(xFile!.path,fit: BoxFit.cover);
+    _iconImage = Image.file(File(xFile!.path), fit: BoxFit.cover,);
     setState(() {});
   }
 
   Future photoLibrary() async {
     XFile? xFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-    _iconImage = Image.asset(xFile!.path,fit: BoxFit.cover);
+    //_iconImage = Image.asset(xFile!.path,fit: BoxFit.cover);
+    _iconImage = Image.file(File(xFile!.path), fit: BoxFit.cover,);
     setState(() {});
   }
 

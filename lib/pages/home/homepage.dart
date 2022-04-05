@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:huomanduo_owner/common/base_app_bar.dart';
 import 'package:huomanduo_owner/utils/screen_fit.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,11 +20,13 @@ class _MineState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("首页"),
-        backgroundColor: Colors.green,
-        elevation: 0, //去掉底部的阴影
-      ),
+      appBar: BaseAppBar(
+        titleStr: "首页",
+        bgColor: Colors.amber,
+        automaticallyImplyLeading: false,
+
+
+      )
       // body: Column(
       //   children: <Widget>[
       //     //new Expanded(child: new TabBarWidget()),
