@@ -44,9 +44,12 @@ dependencies:
   flutter_screenutil: ^5.3.1
   #富文本编辑器
   #zefyr: ^1.0.0-rc.5
-
   #extended_text_field: ^10.0.0
 
+  #加载网络图片
+  cached_network_image: ^3.2.0
+
+  #相册选择图片，拍照
   image_picker: ^0.8.4+11
 
   #http: ^0.13.4

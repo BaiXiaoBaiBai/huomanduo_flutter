@@ -109,7 +109,10 @@ class HttpRequest {
       path,
       data: data,
       queryParameters: params,
-      options: requestOptions,
+      //options: requestOptions,
+      options: Options(
+        contentType: Headers.formUrlEncodedContentType,
+      ),
       cancelToken: cancelToken ?? _cancelToken,
     );
     print("post请求结果：${HttpUrl.baseUrl + path}\njsonString == ${response.data}");

@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:huomanduo_owner/common/base_app_bar.dart';
@@ -14,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../gen_a/A.dart';
 import '../../../http/base_model.dart';
 import '../../../http/http_url.dart';
+import '../../../utils/AppEvent.dart';
 import '../model/user_model.dart';
 
 class MyInfoPage extends StatefulWidget {
@@ -26,6 +28,8 @@ class _MyInfoState extends State<MyInfoPage>
 
   late UserModel _userModel;
   late Image _iconImage;
+  late String _imagePath;
+  final TextEditingController _userNameCtrl = TextEditingController();
 
   void initState() {
     _userModel = UserModel(
@@ -35,7 +39,7 @@ class _MyInfoState extends State<MyInfoPage>
         avatar_url: "https://desk-fd.zol-img.com.cn/t_s960x600c5/g6/M00/03/0E/ChMkKWDZLXSICljFAC1U9uUHfekAARQfgG_oL0ALVUO515.jpg",
         mobile: ""
     );
-    _iconImage = Image.network("https://desk-fd.zol-img.com.cn/t_s960x600c5/g6/M00/03/0E/ChMkKWDZLXSICljFAC1U9uUHfekAARQfgG_oL0ALVUO515.jpg", fit: BoxFit.cover,);
+    _iconImage = Image.network(_userModel.avatar_url, fit: BoxFit.cover,);
     _requestUserInfo();
   }
 
@@ -47,18 +51,24 @@ class _MyInfoState extends State<MyInfoPage>
 
     final BaseModel baseModel = await HttpRequest().post(HttpUrl.userInfo_URL, params: params);
     _userModel = UserModel.fromJson(baseModel.data);
+    _userNameCtrl.text = _userModel.user_name;
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text("我的资料",style: TextStyle(fontSize: 17.sp,color: HexColor(HexColor.HMD_333333)),),
-      //   backgroundColor: HexColor(HexColor.HMD_White),
-      //   elevation: 0, //去掉底部的阴影
-      // ),
-      appBar: BaseAppBar(titleStr: "我的资料"),
+      appBar: BaseAppBar(
+        titleStr: "我的资料",
+        actions: [
+          TextButton(
+            child: Text("提交",style: TextStyle(fontSize: 13.sp, color: HexColor(HexColor.HMD_666666)),),
+            onPressed: (){
+              _submitUserInfo();
+            },
+          )
+        ],
+      ),
       body: Column(
         children: [
           Container(
@@ -160,15 +170,14 @@ class _MyInfoState extends State<MyInfoPage>
 
   Future takePhoto() async {
     XFile? xFile = await ImagePicker().pickImage(source: ImageSource.camera);
-    //_iconImage = Image.asset(xFile!.path,fit: BoxFit.cover);
     _iconImage = Image.file(File(xFile!.path), fit: BoxFit.cover,);
     setState(() {});
   }
 
   Future photoLibrary() async {
     XFile? xFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-    //_iconImage = Image.asset(xFile!.path,fit: BoxFit.cover);
     _iconImage = Image.file(File(xFile!.path), fit: BoxFit.cover,);
+    _imagePath = xFile.path;
     setState(() {});
   }
 
@@ -196,9 +205,20 @@ class _MyInfoState extends State<MyInfoPage>
               top: 0,
               bottom: 0,
               right: 50.w,
-              child: Center(
-                child: Text(_userModel.user_name, style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_333333))),
+              left: 100.w,
+              child: TextField(
+                controller: _userNameCtrl,
+                style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_333333)),
+                keyboardType: TextInputType.text,
+                textAlign: TextAlign.end,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: "请输入用户名",
+                ),
               )
+              // Center(
+              //   child: Text(_userModel.user_name, style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_333333))),
+              // )
           ),
           Positioned(
             right: 0,
@@ -247,6 +267,26 @@ class _MyInfoState extends State<MyInfoPage>
           ],
         )
     );
+  }
+
+  //提交用户信息
+  Future _submitUserInfo() async {
+
+    Map<String,dynamic> params = new Map();
+    SharedPreferences shared = await SharedPreferences.getInstance();
+    params["token"] = shared.getString("token");
+    params["user_name"] = "baixiaobai";
+
+    FormData formData = FormData.fromMap({
+      "avatar": await MultipartFile.fromFile(_imagePath, filename: "huomanduo.png")
+    });
+   //params["picture"] = formData;
+
+    final BaseModel baseModel = await HttpRequest().post(HttpUrl.editUser_URL, params: params, data: formData);
+    ToastUtil.show(baseModel.msg);
+    if (baseModel.status == 200) {
+      AppEvent.event.fire(ReloadUserInfoEvent());
+    }
   }
   
   @override

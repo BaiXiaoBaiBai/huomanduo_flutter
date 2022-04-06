@@ -48,7 +48,7 @@ class _LoginState extends State<LoginPage>
 
     SharedPreferences shared = await SharedPreferences.getInstance();
     await shared.setString("token", token);
-    AppEvent.event.fire(LoginEvent(true));
+    AppEvent.event.fire(ReloadUserInfoEvent());
     Application.router.pop(context);
   }
 
@@ -154,11 +154,8 @@ class _LoginState extends State<LoginPage>
   bool get wantKeepAlive => true;
 }
 
-class LoginEvent {
 
-  final bool isLogin;
-  LoginEvent(this.isLogin);
-}
+
 
 
 

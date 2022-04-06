@@ -13,9 +13,10 @@ class HttpUrl {
 
   static const String userConfig_url = 'mobile/Userconfig';
 
-  static const String baseUrl = 'http://shounabar.com/';
-  //static const String baseUrl = 'http://localhost:9090/';
+  //static const String baseUrl = 'http://shounabar.com/';
+  static const String baseUrl = 'http://localhost:9090/';
 
   static const String userLogin_URL = 'user/user-login';
   static const String userInfo_URL = 'user/user-info';
+  static const String editUser_URL = 'user/edit-user';
 }

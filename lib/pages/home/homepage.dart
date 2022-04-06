@@ -23,15 +23,8 @@ class _MineState extends State<HomePage>
       appBar: BaseAppBar(
         titleStr: "首页",
         bgColor: Colors.amber,
-        automaticallyImplyLeading: false,
-
-
+        leading: Text(""),
       )
-      // body: Column(
-      //   children: <Widget>[
-      //     //new Expanded(child: new TabBarWidget()),
-      //   ],
-      // ),
     );
   }
 

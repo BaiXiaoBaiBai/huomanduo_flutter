@@ -36,7 +36,7 @@ class _MineState extends State<MinePage>
     );
     _requestUserInfo();
 
-    AppEvent.event.on().listen((event) {
+    AppEvent.event.on<ReloadUserInfoEvent>().listen((event) {
       print("监听到了");
       _requestUserInfo();
     });
