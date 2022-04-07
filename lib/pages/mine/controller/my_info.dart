@@ -4,10 +4,12 @@ import 'dart:io';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:huomanduo_owner/common/base_app_bar.dart';
 import 'package:huomanduo_owner/http/http_request.dart';
 import 'package:huomanduo_owner/utils/hex_color.dart';
+import 'package:huomanduo_owner/utils/image_compress.dart';
 import 'package:huomanduo_owner/utils/toast_util.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,7 +17,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../gen_a/A.dart';
 import '../../../http/base_model.dart';
 import '../../../http/http_url.dart';
-import '../../../utils/AppEvent.dart';
+import '../../../utils/app_event.dart';
 import '../model/user_model.dart';
 
 class MyInfoPage extends StatefulWidget {
@@ -169,18 +171,20 @@ class _MyInfoState extends State<MyInfoPage>
   }
 
   Future takePhoto() async {
-    XFile? xFile = await ImagePicker().pickImage(source: ImageSource.camera);
+    XFile? xFile = await ImagePicker().pickImage(source: ImageSource.camera, imageQuality: 1);
     _iconImage = Image.file(File(xFile!.path), fit: BoxFit.cover,);
     setState(() {});
   }
 
   Future photoLibrary() async {
-    XFile? xFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-    _iconImage = Image.file(File(xFile!.path), fit: BoxFit.cover,);
+    XFile? xFile = await ImagePicker().pickImage(source: ImageSource.gallery,imageQuality: 1);
+    _iconImage = Image.file(
+      File(xFile!.path),
+      fit: BoxFit.cover,
+    );
     _imagePath = xFile.path;
     setState(() {});
   }
-
 
   // 用户名cell
   _userNameCell() {
@@ -275,10 +279,10 @@ class _MyInfoState extends State<MyInfoPage>
     Map<String,dynamic> params = new Map();
     SharedPreferences shared = await SharedPreferences.getInstance();
     params["token"] = shared.getString("token");
-    params["user_name"] = "baixiaobai";
+    params["user_name"] = _userNameCtrl.text;
 
     FormData formData = FormData.fromMap({
-      "avatar": await MultipartFile.fromFile(_imagePath, filename: "huomanduo.png")
+      "avatar": await MultipartFile.fromFile(_imagePath, filename: "huomanduo.jpeg")
     });
    //params["picture"] = formData;
 
@@ -293,4 +297,5 @@ class _MyInfoState extends State<MyInfoPage>
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 
+  // http://oss-cn-zhangjiakou.aliyuncs.com/huomanduo-images/2022-04/2022-04-07/26aa80e4e21e48a2bfbea76a9bdd2873huomanduo.png1197706862557057781.png
 }

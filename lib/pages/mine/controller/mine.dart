@@ -1,4 +1,5 @@
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,7 +13,7 @@ import '../../../http/http_request.dart';
 import '../../../http/http_url.dart';
 import '../../../routers/Application.dart';
 import '../../../routers/routers.dart';
-import '../../../utils/AppEvent.dart';
+import '../../../utils/app_event.dart';
 
 
 class MinePage extends StatefulWidget {
@@ -95,10 +96,19 @@ class _MineState extends State<MinePage>
             top: 80.w,
             width: 60.w,
             height: 60.w,
-            child: CircleAvatar(
-                radius: 30.w,
-                backgroundImage: NetworkImage("https://desk-fd.zol-img.com.cn/t_s960x600c5/g6/M00/03/0E/ChMkKWDZLXSICljFAC1U9uUHfekAARQfgG_oL0ALVUO515.jpg")
-            )
+            child:CircleAvatar(
+              radius: 30.w,
+              backgroundImage: CachedNetworkImageProvider(
+                _userModel.avatar_url,
+              ),
+            ),
+            // CachedNetworkImage(
+            //   imageUrl: "https://desk-fd.zol-img.com.cn/t_s960x600c5/g6/M00/03/0E/ChMkKWDZLXSICljFAC1U9uUHfekAARQfgG_oL0ALVUO515.jpg",
+            // )
+            // child: CircleAvatar(
+            //     radius: 30.w,
+            //     backgroundImage: NetworkImage("https://desk-fd.zol-img.com.cn/t_s960x600c5/g6/M00/03/0E/ChMkKWDZLXSICljFAC1U9uUHfekAARQfgG_oL0ALVUO515.jpg")
+            // )
         ),
         Positioned(
             left: 100.w,
@@ -149,6 +159,20 @@ class _MineState extends State<MinePage>
       ],
     );
   }
+
+  // _bottomSheet() {
+  //   return showModalBottomSheet(
+  //       context: context,
+  //       builder: (BuildContext con) => Container(
+  //         height: 160,
+  //         padding: EdgeInsets.all(20),
+  //         color: Colors.white,
+  //         child: Column(
+  //           children: [Text("data"), Text("data2")],
+  //         ),
+  //       )
+  //   );
+  // }
 
 
   @override

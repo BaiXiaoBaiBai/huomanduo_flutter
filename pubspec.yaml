@@ -76,6 +76,12 @@ dependencies:
   #上拉下拉刷新
   #pull_to_refresh: ^2.0.0
 
+  #图片压缩
+  flutter_image_compress: ^1.1.0
+
+  #文件读写
+  path_provider: ^2.0.9
+
 
 dev_dependencies:
   flutter_test:

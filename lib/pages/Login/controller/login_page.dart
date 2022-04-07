@@ -4,7 +4,7 @@ import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:huomanduo_owner/routers/Application.dart';
-import 'package:huomanduo_owner/utils/AppEvent.dart';
+import 'package:huomanduo_owner/utils/app_event.dart';
 import 'package:huomanduo_owner/utils/hex_color.dart';
 import 'package:huomanduo_owner/utils/toast_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
