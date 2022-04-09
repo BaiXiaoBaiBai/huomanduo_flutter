@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -134,7 +135,10 @@ class _MyInfoState extends State<MyInfoPage>
                 right: 50.w,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(25.w),
-                  child: _iconImage,
+                  child: CachedNetworkImage(
+                    imageUrl: _userModel.avatar_url,
+
+                  ),
                 )
             ),
             Positioned(
