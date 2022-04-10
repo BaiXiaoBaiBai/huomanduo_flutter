@@ -43,6 +43,10 @@ class _MyInfoState extends State<MyInfoPage>
         mobile: ""
     );
     _iconImage = Image.network(_userModel.avatar_url, fit: BoxFit.cover,);
+    // _iconImage = CachedNetworkImage(
+    //   imageUrl: _userModel.avatar_url,
+    //   fit: BoxFit.cover,
+    // ) as Image;
     _requestUserInfo();
   }
 
@@ -135,10 +139,7 @@ class _MyInfoState extends State<MyInfoPage>
                 right: 50.w,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(25.w),
-                  child: CachedNetworkImage(
-                    imageUrl: _userModel.avatar_url,
-
-                  ),
+                  child: _iconImage,
                 )
             ),
             Positioned(
@@ -174,14 +175,17 @@ class _MyInfoState extends State<MyInfoPage>
     );
   }
 
+  // 拍照
   Future takePhoto() async {
     XFile? xFile = await ImagePicker().pickImage(source: ImageSource.camera, imageQuality: 1);
     _iconImage = Image.file(File(xFile!.path), fit: BoxFit.cover,);
+    _imagePath = xFile.path;
     setState(() {});
   }
 
+  // 相册选择图片
   Future photoLibrary() async {
-    XFile? xFile = await ImagePicker().pickImage(source: ImageSource.gallery,imageQuality: 1);
+    XFile? xFile = await ImagePicker().pickImage(source: ImageSource.gallery, imageQuality: 20);
     _iconImage = Image.file(
       File(xFile!.path),
       fit: BoxFit.cover,
