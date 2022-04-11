@@ -5,7 +5,6 @@ import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:huomanduo_owner/common/base_app_bar.dart';
 import 'package:huomanduo_owner/http/http_request.dart';

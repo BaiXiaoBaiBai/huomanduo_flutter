@@ -77,10 +77,13 @@ dependencies:
   #pull_to_refresh: ^2.0.0
 
   #图片压缩
-  flutter_image_compress: ^1.1.0
+  #flutter_image_compress: ^1.1.0
 
   #文件读写
   path_provider: ^2.0.9
+
+  #高德地图
+  amap_flutter_location: ^3.0.0
 
 
 dev_dependencies:
