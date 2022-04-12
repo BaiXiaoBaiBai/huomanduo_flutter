@@ -26,6 +26,7 @@ class _SelectLocationState extends State<SelectLocation>
 
     final AMapWidget map = AMapWidget(
       apiKey: AmapConfig.amapApiKeys,
+      privacyStatement: AmapConfig.amapPrivacyStatement,
       onMapCreated: onMapCreated,
     );
 
@@ -39,11 +40,11 @@ class _SelectLocationState extends State<SelectLocation>
         child: Stack(
           alignment: Alignment.center,
           children: [
-            Container(
-              //left: 0,
-              //top: 0,
-              height: 200,
-              width: 300,
+            Positioned(
+              left: 0,
+              top: 0,
+              right: 0,
+              height: 500.h,
               child: map,
             ),
             Positioned(
