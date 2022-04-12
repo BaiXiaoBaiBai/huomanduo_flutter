@@ -15,6 +15,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.5.0"
+  amap_flutter_base:
+    dependency: transitive
+    description:
+      name: amap_flutter_base
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0"
+  amap_flutter_map:
+    dependency: "direct main"
+    description:
+      name: amap_flutter_map
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0"
   analyzer:
     dependency: transitive
     description:

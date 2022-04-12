@@ -29,4 +29,11 @@ class BaseModel {
     source ~/.bash_profile
     flutter pub run build_runner build
 
+    debug-SHA1
+    D9:9E:FC:F7:41:22:C1:B3:25:92:6C:58:15:24:38:E7:27:AE:8C:99
+
+    3D:68:12:9C:C2:C3:63:A6:36:73:A4:F9:B3:18:82:BD:49:AC:23:06
+
+
+
  */

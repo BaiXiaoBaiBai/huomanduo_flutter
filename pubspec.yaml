@@ -83,7 +83,7 @@ dependencies:
   path_provider: ^2.0.9
 
   #高德地图
-  amap_flutter_location: ^3.0.0
+  amap_flutter_map: ^3.0.0
 
 
 dev_dependencies:

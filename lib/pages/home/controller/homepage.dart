@@ -1,12 +1,15 @@
 
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:huomanduo_owner/common/base_app_bar.dart';
 import 'package:huomanduo_owner/utils/screen_fit.dart';
 
-import '../../utils/hex_color.dart';
+import '../../../routers/Application.dart';
+import '../../../routers/routers.dart';
+import '../../../utils/hex_color.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -100,7 +103,7 @@ class _MineState extends State<HomePage>
           SizedBox(height: 10,),
           Container(
             width: 345.w,
-            height: 130.w,
+            height: 120.w,
             // decoration: BoxDecoration(
             //   borderRadius: BorderRadius.all(Radius.circular(5))
             // ),
@@ -111,6 +114,82 @@ class _MineState extends State<HomePage>
             //color: HexColor(HexColor.HMD_White),
             child: Stack(
               children: [
+                Positioned(
+                    width: 24.w,
+                    height: 24.w,
+                    left: 15.w,
+                    top: 18.w,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(12.w)),
+                        color: Colors.green
+                      ),
+                      child: Center(
+                        child: Text("发", style: TextStyle(fontSize: 13.sp, color: HexColor(HexColor.HMD_White)),),
+                      ),
+                    )
+                ),
+                Positioned(
+                  left: 55.w,
+                    top: 15.w,
+                    right: 15.w,
+                    child: GestureDetector(
+                      child: RichText(
+                        text: TextSpan(text: '银泰国际',style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_333333)),
+                            children: <TextSpan>[
+                              TextSpan(text: '\n15633671843',style: TextStyle(fontSize: 13.sp, color: HexColor(HexColor.HMD_999999))),
+                            ]
+                        ),
+                        maxLines: 2,
+                      ),
+                      onTap: (){
+                        Application.router.navigateTo(context, Routes.selectLocation, transition: TransitionType.native);
+                      },
+                    )
+                ),
+                Positioned(
+                    left: 50.w,
+                    top: 60.w,
+                    right: 15.w,
+                    child: Divider(
+                      color: HexColor(HexColor.HMD_DCDCDC),
+                      height: 1,
+                    )
+                ),
+                Positioned(
+                    width: 24.w,
+                    height: 24.w,
+                    left: 15.w,
+                    top: 78.w,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(12.w)),
+                          color: Colors.red
+                      ),
+                      child: Center(
+                        child: Text("收", style: TextStyle(fontSize: 13.sp, color: HexColor(HexColor.HMD_White)),),
+                      ),
+                    )
+                ),
+                Positioned(
+                    left: 55.w,
+                    top: 75.w,
+                    right: 15.w,
+                    child: GestureDetector(
+                      child: RichText(
+                        text: TextSpan(text: '银泰国际',style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_333333)),
+                            children: <TextSpan>[
+                              TextSpan(text: '\n15633671843',style: TextStyle(fontSize: 13.sp, color: HexColor(HexColor.HMD_999999))),
+                            ]
+                        ),
+                        maxLines: 2,
+                      ),
+                      onTap: (){
+
+                        print("222222");
+                      },
+                    )
+                ),
 
 
 
