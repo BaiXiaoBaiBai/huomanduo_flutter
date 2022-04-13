@@ -12,6 +12,7 @@ import 'package:amap_flutter_map/amap_flutter_map.dart';
 import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'package:amap_flutter_location/amap_flutter_location.dart';
 import 'package:amap_flutter_location/amap_location_option.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class SelectLocation extends StatefulWidget {
   @override
@@ -21,11 +22,18 @@ class SelectLocation extends StatefulWidget {
 class _SelectLocationState extends State<SelectLocation>
     with SingleTickerProviderStateMixin {
 
-  LatLng _mapCenter = LatLng(39.909187, 116.397451);
+  //LatLng _mapCenter = LatLng(39.909187, 116.397451);
   AMapFlutterLocation _locationPlugin = new AMapFlutterLocation();
+  double _currentLat = 39.909187;
+  double _currentLng = 116.397451;
 
   @override
   void initState() {
+
+    AMapFlutterLocation.updatePrivacyShow(true, true);
+    AMapFlutterLocation.updatePrivacyAgree(true);
+    /// 动态申请定位权限
+    requestPermission();
 
     AMapFlutterLocation.setApiKey(AmapConfig.androidKey, AmapConfig.iosKey);
     _setLocationOption();
@@ -35,9 +43,12 @@ class _SelectLocationState extends State<SelectLocation>
 
       print("11111111111");
       print(event);
+      print(event["latitude"]);
+      print(event["longitude"]);
+      _currentLat = event["latitude"] as double;
+      _currentLng = event["longitude"] as double;
     });
   }
-
 
   ///设置定位参数
   void _setLocationOption() {
@@ -97,7 +108,7 @@ class _SelectLocationState extends State<SelectLocation>
       onMapCreated: onMapCreated,
       scaleEnabled: false,
       myLocationStyleOptions: MyLocationStyleOptions(true),
-      initialCameraPosition: const CameraPosition(target: LatLng(38.047843, 114.520791), zoom: 17),
+      initialCameraPosition: const CameraPosition(target: LatLng(39.909187, 116.397451), zoom: 17),
       // onLocationChanged: (location) {
       //
       //   print("lat = " + location.latLng.latitude.toString());
@@ -105,10 +116,9 @@ class _SelectLocationState extends State<SelectLocation>
       // },
       onCameraMoveEnd: (pos) {
 
-        print("lat = " + pos.target.latitude.toString());
-        print("lng = " + pos.target.longitude.toString());
-        _mapCenter =
-            LatLng(pos.target.latitude, pos.target.longitude);
+        print("lat1 = " + pos.target.latitude.toString());
+        print("lng1 = " + pos.target.longitude.toString());
+        //_mapCenter = LatLng(pos.target.latitude, pos.target.longitude);
       },
 
     );
@@ -175,6 +185,36 @@ class _SelectLocationState extends State<SelectLocation>
     });
     print('地图审图号（普通地图）: $mapContentApprovalNumber');
     print('地图审图号（卫星地图): $satelliteImageApprovalNumber');
+  }
+
+  /// 动态申请定位权限
+  void requestPermission() async {
+    // 申请权限
+    bool hasLocationPermission = await requestLocationPermission();
+    if (hasLocationPermission) {
+      print("定位权限申请通过");
+    } else {
+      print("定位权限申请不通过");
+    }
+  }
+
+  /// 申请定位权限
+  /// 授予定位权限返回true， 否则返回false
+  Future<bool> requestLocationPermission() async {
+    //获取当前的权限
+    var status = await Permission.location.status;
+    if (status == PermissionStatus.granted) {
+      //已经授权
+      return true;
+    } else {
+      //未授权则发起一次申请
+      status = await Permission.location.request();
+      if (status == PermissionStatus.granted) {
+        return true;
+      } else {
+        return false;
+      }
+    }
   }
 
   @override

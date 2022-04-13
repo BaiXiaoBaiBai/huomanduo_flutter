@@ -88,6 +88,12 @@ dependencies:
   #高德定位
   amap_flutter_location: ^3.0.0
 
+  #手机权限验证和开启
+  permission_handler: ^9.2.0
+
+  #全局状态管理
+  provider: ^6.0.2
+
 
 dev_dependencies:
   flutter_test:
