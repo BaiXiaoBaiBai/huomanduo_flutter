@@ -24,8 +24,8 @@ class _SelectLocationState extends State<SelectLocation>
 
   //LatLng _mapCenter = LatLng(39.909187, 116.397451);
   AMapFlutterLocation _locationPlugin = new AMapFlutterLocation();
-  double _currentLat = 39.909187;
-  double _currentLng = 116.397451;
+  double _currentLat = 0.0;
+  double _currentLng = 0.0;
 
   @override
   void initState() {
@@ -43,10 +43,21 @@ class _SelectLocationState extends State<SelectLocation>
 
       print("11111111111");
       print(event);
-      print(event["latitude"]);
-      print(event["longitude"]);
+
       _currentLat = event["latitude"] as double;
       _currentLng = event["longitude"] as double;
+
+      _mapController.moveCamera(
+          CameraUpdate.newCameraPosition(
+              CameraPosition(
+                target: LatLng(_currentLat, _currentLng),
+                zoom: 17
+              )
+          ),
+        animated: true
+      );
+
+
     });
   }
 
