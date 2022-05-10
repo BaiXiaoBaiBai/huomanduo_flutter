@@ -94,6 +94,15 @@ dependencies:
   #全局状态管理
   provider: ^6.0.2
 
+  #键盘遮挡输入框
+  keyboard_avoider: ^0.1.2
+
+  #百度地图
+  #flutter_baidu_mapapi_map: ^3.0.0+2
+  #flutter_baidu_mapapi_search: ^3.0.0
+  #flutter_baidu_mapapi_utils: ^3.0.0
+
+
 
 dev_dependencies:
   flutter_test:

@@ -18,7 +18,8 @@ class HttpRequest {
     if (dio == null) {
       // BaseOptions、Options、RequestOptions 都可以配置参数，优先级别依次递增，且可以根据优先级别覆盖参数
       BaseOptions baseOptions = BaseOptions(
-        baseUrl: HttpUrl.baseUrl,
+        // baseUrl: HttpUrl.baseUrl,
+        baseUrl: "",
         connectTimeout: HttpUrl.CONNECT_TIMEOUT,
         receiveTimeout: HttpUrl.RECEIVE_TIMEOUT,
         //headers: {'Authorization':HttpOptions.BASE_TOKEN},
@@ -94,6 +95,28 @@ class HttpRequest {
     return baseModel;
   }
 
+  /// restful get 操作
+  Future getAllUrl(
+      String path, {
+        Map<String, dynamic>? params,
+        Options? options,
+        CancelToken? cancelToken,
+      }) async {
+
+    // print('首页网络请求测试___$result');
+    print("get请求：${path}     参数：$params");
+    Options requestOptions = setAuthorizationHeader(options ?? Options());
+    Response response = await dio!.get(
+      path,
+      queryParameters: params,
+      options: requestOptions,
+      cancelToken: cancelToken ?? _cancelToken,
+    );
+    print("get请求结果：${path}\njsonString == ${response.data}");
+    BaseModel baseModel = BaseModel.fromJson(jsonDecode(response.data));
+    return baseModel;
+  }
+
   /// restful post 操作
   Future post(
       String path, {
@@ -103,10 +126,11 @@ class HttpRequest {
         CancelToken? cancelToken,
       }) async {
 
-    print("post请求：${HttpUrl.baseUrl + path}     参数：$params");
+    String url =  HttpUrl.baseUrl + path;
+    print("post请求：${url}     参数：$params");
     Options requestOptions = setAuthorizationHeader(options ?? Options());
     Response response = await dio!.post(
-      path,
+      url,
       data: data,
       queryParameters: params,
       //options: requestOptions,
@@ -115,7 +139,7 @@ class HttpRequest {
       ),
       cancelToken: cancelToken ?? _cancelToken,
     );
-    print("post请求结果：${HttpUrl.baseUrl + path}\njsonString == ${response.data}");
+    print("post请求结果：${url}\njsonString == ${response.data}");
     //BaseModel baseModel = BaseModel.fromJson(jsonDecode(response.data));
      BaseModel baseModel = BaseModel.fromJson(response.data);
     return baseModel;

@@ -1,5 +1,4 @@
 
-
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
@@ -14,6 +13,12 @@ import 'package:amap_flutter_location/amap_flutter_location.dart';
 import 'package:amap_flutter_location/amap_location_option.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../gen_a/A.dart';
+import '../../../utils/hex_color.dart';
+import '../../../http/base_model.dart';
+import '../../../http/http_request.dart';
+import '../../../http/http_url.dart';
+
 class SelectLocation extends StatefulWidget {
   @override
   _SelectLocationState createState() => _SelectLocationState();
@@ -26,6 +31,10 @@ class _SelectLocationState extends State<SelectLocation>
   AMapFlutterLocation _locationPlugin = new AMapFlutterLocation();
   double _currentLat = 0.0;
   double _currentLng = 0.0;
+  final TextEditingController _peopleCtrl = TextEditingController();
+  final TextEditingController _mobileCtrl = TextEditingController();
+  final TextEditingController _addressCtrl = TextEditingController();
+  String _addressStr = "";
 
   @override
   void initState() {
@@ -41,24 +50,26 @@ class _SelectLocationState extends State<SelectLocation>
 
     _locationPlugin.onLocationChanged().listen((Map<String, Object>event) {
 
-      print("11111111111");
       print(event);
-
-      _currentLat = event["latitude"] as double;
-      _currentLng = event["longitude"] as double;
-
-      _mapController.moveCamera(
-          CameraUpdate.newCameraPosition(
-              CameraPosition(
-                target: LatLng(_currentLat, _currentLng),
-                zoom: 17
-              )
-          ),
-        animated: true
-      );
-
-
+      _currentLat = double.parse(event["latitude"].toString());
+      _currentLng = double.parse(event["longitude"].toString());
+      _addressStr =  event["address"].toString();
+      setState(() {});
+      _toCurrentLocation(_currentLat, _currentLng);
     });
+  }
+
+  void _toCurrentLocation(double lat, double lng) {
+
+    _mapController.moveCamera(
+        CameraUpdate.newCameraPosition(
+            CameraPosition(
+                target: LatLng(lat, lng),
+                zoom: 17
+            )
+        ),
+        animated: true
+    );
   }
 
   ///设置定位参数
@@ -122,49 +133,268 @@ class _SelectLocationState extends State<SelectLocation>
       initialCameraPosition: const CameraPosition(target: LatLng(39.909187, 116.397451), zoom: 17),
       // onLocationChanged: (location) {
       //
-      //   print("lat = " + location.latLng.latitude.toString());
-      //   print("lng = " + location.latLng.longitude.toString());
+      //   print("lat2 = " + location.latLng.latitude.toString());
+      //   print("lng2 = " + location.latLng.longitude.toString());
       // },
       onCameraMoveEnd: (pos) {
-
         print("lat1 = " + pos.target.latitude.toString());
         print("lng1 = " + pos.target.longitude.toString());
+
+
+
+
         //_mapCenter = LatLng(pos.target.latitude, pos.target.longitude);
       },
 
     );
 
     return Scaffold(
-      // appBar: BaseAppBar(
-      //   titleStr: "选择位置",
-      //   bgColor: Colors.amber,
-      // ),
+      appBar: BaseAppBar(
+        titleStr: "发货人信息",
+        bgColor: Colors.amber,
+        actions: [
+          TextButton(
+            child: Text("确定",style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_1A70FB)),),
+            onPressed: (){
+
+            },
+          )
+        ],
+      ),
+      resizeToAvoidBottomInset: false,
       body: ConstrainedBox(
         constraints: BoxConstraints.expand(),
-        child: Stack(
-          alignment: Alignment.center,
+        child: Column (
           children: [
-            Positioned(
-              left: 0,
-              top: 0,
-              right: 0,
-              height: 500.h,
-              child: map,
+            Flexible(
+                child: Container(
+                  height: 400.h,
+                  child: Stack (
+                    alignment: Alignment.center,
+                    children: [
+                      Positioned(
+                        left: 0,
+                        top: 0,
+                        right: 0,
+                        height: 400.h,
+                        child: map,
+                      ),
+                      Positioned(
+                        //width: 100.w,
+                        //height: 100.w,
+                          right: 10,
+                          top: 300.h,
+                          child: IconButton(
+                            //icon: ImageIcon(AssetImage(A.assets_images_right_arrow)),
+                            icon: Image.asset(A.assets_images_map_reset),
+                            onPressed: (){
+
+                              _toCurrentLocation(_currentLat, _currentLng);
+                            },
+                          )
+                      ),
+                      Positioned(
+                          width: 60,
+                          height: 60,
+                          left: 0.5.sw-30,
+                          top: 200.h-30,
+                          child: Image.asset(A.assets_images_map_center)
+                      ),
+                    ],
+                  ),
+                ),
             ),
-            // Positioned(
-            //   right: 10,
-            //     bottom: 15,
-            //     child: Container(
-            //       alignment: Alignment.centerLeft,
-            //       child: Column(
-            //         mainAxisAlignment: MainAxisAlignment.start,
-            //         children: _approvalNumberWidget,
-            //       ),
-            //     )
-            // )
+            SizedBox(
+              height: 10.h,
+            ),
+            Padding(
+              padding:EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    height: 50.h,
+                    padding: EdgeInsets.fromLTRB(15.w, 0, 15.w, 0),
+                    child: Text(_addressStr,style: TextStyle(fontSize: 17.sp,color: HexColor(HexColor.HMD_333333)),),
+                  ),
+                  Row(
+                    children: [
+                      Container (
+                        width: 185.w,
+                        height: 40.h,
+                        padding: EdgeInsets.fromLTRB(15.w, 0, 10.w, 0),
+                        child: TextField(
+                          controller: _peopleCtrl,
+                          style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_666666)),
+                          keyboardType: TextInputType.text,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "联系人(必填)",
+                            hintMaxLines:1,
+                            enabledBorder: new UnderlineInputBorder( // 下划线不是焦点的时候颜色
+                              borderSide: BorderSide(
+                                  color: HexColor(HexColor.HMD_DCDCDC)
+                              ),
+                            ),
+                            focusedBorder: new UnderlineInputBorder( // 下划线焦点集中的时候颜色
+                              borderSide: BorderSide(
+                                  color: HexColor(HexColor.HMD_1A70FB)
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container (
+                        width: 185.w,
+                        height: 40.h,
+                        padding: EdgeInsets.fromLTRB(15.w, 0, 10.w, 0),
+                        child: TextField(
+                          controller: _mobileCtrl,
+                          style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_666666)),
+                          keyboardType: TextInputType.text,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "手机号(必填)",
+                            hintMaxLines:1,
+                            enabledBorder: new UnderlineInputBorder( // 下划线不是焦点的时候颜色
+                              borderSide: BorderSide(
+                                  color: HexColor(HexColor.HMD_DCDCDC)
+                              ),
+                            ),
+                            focusedBorder: new UnderlineInputBorder( // 下划线焦点集中的时候颜色
+                              borderSide: BorderSide(
+                                  color: HexColor(HexColor.HMD_1A70FB)
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                  Container (
+                    height: 40.h,
+                    padding: EdgeInsets.fromLTRB(15.w, 0, 15.w, 0),
+                    child: TextField(
+                      controller: _addressCtrl,
+                      style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_666666)),
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: "楼层和门牌号(选填)",
+                        hintMaxLines:1,
+                        enabledBorder: new UnderlineInputBorder( // 下划线不是焦点的时候颜色
+                          borderSide: BorderSide(
+                              color: HexColor(HexColor.HMD_DCDCDC)
+                          ),
+                        ),
+                        focusedBorder: new UnderlineInputBorder( // 下划线焦点集中的时候颜色
+                          borderSide: BorderSide(
+                              color: HexColor(HexColor.HMD_1A70FB)
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            )
+
+
+
+            /*
+            Padding(
+                padding:EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom
+                ),
+                child: Row(
+                  children: [
+                    Container (
+                      width: 185.w,
+                      height: 40.h,
+                      padding: EdgeInsets.fromLTRB(15.w, 0, 10.w, 0),
+                      child: TextField(
+                        controller: _peopleCtrl,
+                        style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_666666)),
+                        keyboardType: TextInputType.text,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "联系人(必填)",
+                          hintMaxLines:1,
+                          enabledBorder: new UnderlineInputBorder( // 下划线不是焦点的时候颜色
+                            borderSide: BorderSide(
+                                color: HexColor(HexColor.HMD_DCDCDC)
+                            ),
+                          ),
+                          focusedBorder: new UnderlineInputBorder( // 下划线焦点集中的时候颜色
+                            borderSide: BorderSide(
+                                color: HexColor(HexColor.HMD_1A70FB)
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container (
+                      width: 185.w,
+                      height: 40.h,
+                      padding: EdgeInsets.fromLTRB(15.w, 0, 10.w, 0),
+                      child: TextField(
+                        controller: _mobileCtrl,
+                        style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_666666)),
+                        keyboardType: TextInputType.text,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "手机号(必填)",
+                          hintMaxLines:1,
+                          enabledBorder: new UnderlineInputBorder( // 下划线不是焦点的时候颜色
+                            borderSide: BorderSide(
+                                color: HexColor(HexColor.HMD_DCDCDC)
+                            ),
+                          ),
+                          focusedBorder: new UnderlineInputBorder( // 下划线焦点集中的时候颜色
+                            borderSide: BorderSide(
+                                color: HexColor(HexColor.HMD_1A70FB)
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                )
+            ),
+            Padding(
+                padding:EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom
+                ),
+                child: Container (
+                  height: 40.h,
+                  padding: EdgeInsets.fromLTRB(15.w, 0, 15.w, 0),
+                  child: TextField(
+                    controller: _addressCtrl,
+                    style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_666666)),
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "楼层和门牌号(选填)",
+                      hintMaxLines:1,
+                      enabledBorder: new UnderlineInputBorder( // 下划线不是焦点的时候颜色
+                        borderSide: BorderSide(
+                            color: HexColor(HexColor.HMD_DCDCDC)
+                        ),
+                      ),
+                      focusedBorder: new UnderlineInputBorder( // 下划线焦点集中的时候颜色
+                        borderSide: BorderSide(
+                            color: HexColor(HexColor.HMD_1A70FB)
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+            ),
+*/
 
           ],
-        ),
+        )
       ),
     );
   }
@@ -228,8 +458,20 @@ class _SelectLocationState extends State<SelectLocation>
     }
   }
 
+  Future _requestRegeoGeocode() async {
+
+    Map<String,dynamic> params = new Map();
+    params["token"] = "";
+
+    final BaseModel baseModel = await HttpRequest().post(HttpUrl.userInfo_URL, params: params);
+
+
+  }
+
+
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 
 }
+
