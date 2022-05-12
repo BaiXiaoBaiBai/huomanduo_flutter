@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:huomanduo_owner/pages/home/controller/amap_config.dart';
+import 'package:huomanduo_owner/pages/home/model/consignor_model.dart';
+import 'package:huomanduo_owner/routers/Application.dart';
 
 import '../../../common/base_app_bar.dart';
 import 'package:amap_flutter_map/amap_flutter_map.dart';
@@ -18,8 +20,17 @@ import '../../../utils/hex_color.dart';
 import '../../../http/base_model.dart';
 import '../../../http/http_request.dart';
 import '../../../http/http_url.dart';
+import '../../../utils/toast_util.dart';
 
 class SelectLocation extends StatefulWidget {
+
+  SelectLocation({
+    Key? key,
+    this.type}
+      ) : super(key: key);
+
+  int? type;
+
   @override
   _SelectLocationState createState() => _SelectLocationState();
 }
@@ -35,10 +46,12 @@ class _SelectLocationState extends State<SelectLocation>
   final TextEditingController _mobileCtrl = TextEditingController();
   final TextEditingController _addressCtrl = TextEditingController();
   String _addressStr = "";
+  late int _type;
 
   @override
   void initState() {
 
+    _type = widget.type!;
     AMapFlutterLocation.updatePrivacyShow(true, true);
     AMapFlutterLocation.updatePrivacyAgree(true);
     /// 动态申请定位权限
@@ -51,8 +64,8 @@ class _SelectLocationState extends State<SelectLocation>
     _locationPlugin.onLocationChanged().listen((Map<String, Object>event) {
 
       print(event);
-      _currentLat = double.parse(event["latitude"].toString());
-      _currentLng = double.parse(event["longitude"].toString());
+      _currentLat = double.parse(double.parse(event["latitude"].toString()).toStringAsFixed(6));
+      _currentLng = double.parse(double.parse(event["longitude"].toString()).toStringAsFixed(6));
       _addressStr =  event["address"].toString();
       setState(() {});
       _toCurrentLocation(_currentLat, _currentLng);
@@ -137,12 +150,12 @@ class _SelectLocationState extends State<SelectLocation>
       //   print("lng2 = " + location.latLng.longitude.toString());
       // },
       onCameraMoveEnd: (pos) {
-        print("lat1 = " + pos.target.latitude.toString());
-        print("lng1 = " + pos.target.longitude.toString());
+        print("lat = " + pos.target.latitude.toString());
+        print("lng = " + pos.target.longitude.toString());
 
-
-
-
+        _currentLat = double.parse(pos.target.latitude.toStringAsFixed(6));
+        _currentLng = double.parse(pos.target.longitude.toStringAsFixed(6));
+        _requestRegeoGeocode();
         //_mapCenter = LatLng(pos.target.latitude, pos.target.longitude);
       },
 
@@ -150,13 +163,45 @@ class _SelectLocationState extends State<SelectLocation>
 
     return Scaffold(
       appBar: BaseAppBar(
-        titleStr: "发货人信息",
+        titleStr: _type==1?"发货人信息":"收货人信息",
         bgColor: Colors.amber,
         actions: [
           TextButton(
             child: Text("确定",style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_1A70FB)),),
             onPressed: (){
 
+              if(_addressStr.isEmpty) {
+                ToastUtil.show("请稍等，地址正在加载...");
+                return;
+              }
+              if(_peopleCtrl.text.isEmpty) {
+                if(_type == 1) {
+                  ToastUtil.show("请填写发货人姓名");
+                }
+                else {
+                  ToastUtil.show("请填写收货人姓名");
+                }
+                return;
+              }
+              if(_mobileCtrl.text.isEmpty) {
+                if(_type == 1) {
+                  ToastUtil.show("请填写发货人手机号");
+                }
+                else {
+                  ToastUtil.show("请填写收货人手机号");
+                }
+                return;
+              }
+
+              ConsignorModel model = new ConsignorModel(
+                  latitude: _currentLat.toString(),
+                  longitude: _currentLng.toString(),
+                  adress: _addressStr,
+                  name: _peopleCtrl.text.toString(),
+                  mobile: _mobileCtrl.text.toString(),
+                  detailAdress: _addressCtrl.text.toString());
+
+              Application.router.pop(context,model);
             },
           )
         ],
@@ -252,7 +297,7 @@ class _SelectLocationState extends State<SelectLocation>
                         child: TextField(
                           controller: _mobileCtrl,
                           style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_666666)),
-                          keyboardType: TextInputType.text,
+                          keyboardType: TextInputType.phone,
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: "手机号(必填)",
@@ -458,13 +503,19 @@ class _SelectLocationState extends State<SelectLocation>
     }
   }
 
+  // 逆地理编码
   Future _requestRegeoGeocode() async {
 
     Map<String,dynamic> params = new Map();
-    params["token"] = "";
+    params["key"] = AmapConfig.webKey;
+    params["location"] = _currentLng.toString()+","+_currentLat.toString();
 
-    final BaseModel baseModel = await HttpRequest().post(HttpUrl.userInfo_URL, params: params);
-
+    final Map resultMap = await HttpRequest().getFullUrl(HttpUrl.amap_regeoGeocode_URL,params: params);
+    if (int.parse(resultMap["status"].toString()) == 1) {
+      _addressStr = resultMap["regeocode"]["formatted_address"];
+      print("_addressStr = " + _addressStr);
+      setState(() {});
+    }
 
   }
 

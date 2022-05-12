@@ -95,7 +95,18 @@ dependencies:
   provider: ^6.0.2
 
   #键盘遮挡输入框
-  keyboard_avoider: ^0.1.2
+  #keyboard_avoider: ^0.1.2
+
+  #日期时间选择器
+  flutter_cupertino_datetime_picker: ^3.0.0
+
+  #时间格式转化
+  date_format: ^2.0.6
+
+  flutter_pickers: ^2.1.9
+
+  #城市选择器
+  flutter_city_picker: ^1.0.4
 
   #百度地图
   #flutter_baidu_mapapi_map: ^3.0.0+2

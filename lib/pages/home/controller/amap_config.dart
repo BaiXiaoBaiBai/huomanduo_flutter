@@ -6,6 +6,7 @@ class AmapConfig {
 
   static const String androidKey = "bd5dcfa63f98d2d1bfe69899a6c2377d";
   static const String iosKey = "229731fbfb1d9faefcdc268bae9f8159";
+  static const String webKey = "4052f0af646c5be11afb50086e725659";
 
   ///配置您申请的apikey，在此处配置之后，可以在初始化[AMapWidget]时，通过`apiKey`属性设置
   ///

@@ -82,21 +82,22 @@ class HttpRequest {
       }) async {
 
      // print('首页网络请求测试___$result');
-    print("get请求：${HttpUrl.baseUrl + path}     参数：$params");
+    String url =  HttpUrl.baseUrl + path;
+    print("get请求：${url}     参数：$params");
     Options requestOptions = setAuthorizationHeader(options ?? Options());
     Response response = await dio!.get(
-      path,
+      url,
       queryParameters: params,
       options: requestOptions,
       cancelToken: cancelToken ?? _cancelToken,
     );
-    print("get请求结果：${HttpUrl.baseUrl + path}\njsonString == ${response.data}");
+    print("get请求结果：${url}\njsonString == ${response.data}");
     BaseModel baseModel = BaseModel.fromJson(jsonDecode(response.data));
     return baseModel;
   }
 
-  /// restful get 操作
-  Future getAllUrl(
+  /// restful get 传入全部网址
+  Future getFullUrl(
       String path, {
         Map<String, dynamic>? params,
         Options? options,
@@ -113,8 +114,8 @@ class HttpRequest {
       cancelToken: cancelToken ?? _cancelToken,
     );
     print("get请求结果：${path}\njsonString == ${response.data}");
-    BaseModel baseModel = BaseModel.fromJson(jsonDecode(response.data));
-    return baseModel;
+
+    return response.data;
   }
 
   /// restful post 操作

@@ -26,7 +26,9 @@ var loginHandler = Handler(
 
 var selectLocationHandler = Handler(
     handlerFunc: (BuildContext? context, Map<String, List<String>> params) {
-      return SelectLocation();
+     String type = params["type"]!.first;
+
+      return SelectLocation(type: int.parse(type));
     }
 );
 

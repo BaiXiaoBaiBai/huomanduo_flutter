@@ -5,11 +5,15 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:huomanduo_owner/common/base_app_bar.dart';
+import 'package:huomanduo_owner/pages/home/model/consignor_model.dart';
 import 'package:huomanduo_owner/utils/screen_fit.dart';
 
 import '../../../routers/Application.dart';
 import '../../../routers/routers.dart';
 import '../../../utils/hex_color.dart';
+import 'package:flutter_cupertino_datetime_picker/flutter_cupertino_datetime_picker.dart';
+import 'package:date_format/date_format.dart';
+
 
 class HomePage extends StatefulWidget {
   @override
@@ -24,6 +28,15 @@ class _MineState extends State<HomePage>
   List<Tab> _tabList = [];
   late TabController _controller;
 
+  late ConsignorModel _faModel;
+  late ConsignorModel _shouModel;
+  late InlineSpan _faSpan;
+  late InlineSpan _shouSpan;
+  String beginTime = "";
+  String endTime = "";
+  String beginTimeShow = "";
+  String endTimeShow = "";
+  
   @override
   void initState() {
     ScreenFit.initialize();
@@ -39,6 +52,12 @@ class _MineState extends State<HomePage>
       length: _tabValues.length, //Tab页数量
       vsync: this, //动画效果的异步处理
     );
+
+    _faModel = new ConsignorModel(latitude: "", longitude: "", adress: "", name: "", mobile: "", detailAdress: "");
+    _shouModel = new ConsignorModel(latitude: "", longitude: "", adress: "", name: "", mobile: "", detailAdress: "");
+    _faSpan = TextSpan(text: '请选择发货地址',style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_999999)));
+    _shouSpan = TextSpan(text: '请选择收货地址',style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_999999)));
+
   }
 
   @override
@@ -49,159 +68,267 @@ class _MineState extends State<HomePage>
         bgColor: Colors.amber,
         leading: Text(""),
       ),
-      body: Column(
-        children: [
-          Stack(
-            children: [
-              Container(
-                height: 35.w,
-                alignment: Alignment.center,
-                child: TabBar(
-                  isScrollable: true,
-                  indicatorColor: HexColor('#DCDCDC'),
-                  labelColor: Color(0xffff3700),
-                  unselectedLabelColor: Color(0xff666666),
-                  labelStyle: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w500),
-                  unselectedLabelStyle: TextStyle(fontSize: 15.sp),
-                  indicatorSize: TabBarIndicatorSize.label,
-                  controller: _controller,
-                  tabs: _tabList,
-                  onTap: (index) {
-                    //_carouselCtrl.jumpToPage(index);
-                    _carouselCtrl.animateToPage(index);
-                  },
-                ),
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  Container(
+                    height: 35.w,
+                    alignment: Alignment.center,
+                    child: TabBar(
+                      isScrollable: true,
+                      indicatorColor: HexColor('#DCDCDC'),
+                      labelColor: Color(0xffff3700),
+                      unselectedLabelColor: Color(0xff666666),
+                      labelStyle: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w500),
+                      unselectedLabelStyle: TextStyle(fontSize: 15.sp),
+                      indicatorSize: TabBarIndicatorSize.label,
+                      controller: _controller,
+                      tabs: _tabList,
+                      onTap: (index) {
+                        //_carouselCtrl.jumpToPage(index);
+                        _carouselCtrl.animateToPage(index);
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 7,),
+                  CarouselSlider(
+                    carouselController: _carouselCtrl,
+                    options: CarouselOptions(
+                      height: 130.w,
+                      enableInfiniteScroll: false, //是否循环滚动
+                      onPageChanged: (index, reason){
+                        _controller.animateTo(index);
+                      },
+                    ),
+                    items: _tabValues.map((i) {
+                      return Builder(
+                        builder: (BuildContext context) {
+                          return Container(
+                              width: 1.sw,
+                              color: Colors.white,
+                              margin: EdgeInsets.symmetric(horizontal: 15.w),
+                              // decoration: BoxDecoration(
+                              //     color: Colors.green
+                              // ),
+                              child: Text('$i', style: TextStyle(fontSize: 16.0),)
+                          );
+                        },
+                      );
+                    }).toList(),
+                  ),
+                  SizedBox(height: 10,),
+                ],
               )
-            ],
           ),
-          SizedBox(height: 7,),
-          CarouselSlider(
-            carouselController: _carouselCtrl,
-            options: CarouselOptions(
-              height: 130.w,
-              enableInfiniteScroll: false, //是否循环滚动
-              onPageChanged: (index, reason){
-                  _controller.animateTo(index);
-              },
-            ),
-            items: _tabValues.map((i) {
-              return Builder(
-                builder: (BuildContext context) {
-                  return Container(
-                      width: 1.sw,
-                      color: Colors.white,
-                      margin: EdgeInsets.symmetric(horizontal: 15.w),
-                      // decoration: BoxDecoration(
-                      //     color: Colors.green
-                      // ),
-                      child: Text('$i', style: TextStyle(fontSize: 16.0),)
-                  );
-                },
-              );
-            }).toList(),
-          ),
-          SizedBox(height: 10,),
-          Container(
-            width: 345.w,
-            height: 120.w,
-            // decoration: BoxDecoration(
-            //   borderRadius: BorderRadius.all(Radius.circular(5))
-            // ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(5.w)),
-              color: HexColor(HexColor.HMD_White),
-            ),
-            //color: HexColor(HexColor.HMD_White),
-            child: Stack(
+          SliverToBoxAdapter(
+            child: Column (
               children: [
-                Positioned(
-                    width: 24.w,
-                    height: 24.w,
-                    left: 15.w,
-                    top: 18.w,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(12.w)),
-                        color: Colors.green
+                Container(
+                  width: 345.w,
+                  height: 330.w,
+                  // decoration: BoxDecoration(
+                  //   borderRadius: BorderRadius.all(Radius.circular(5))
+                  // ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(5.w)),
+                    color: HexColor(HexColor.HMD_White),
+                  ),
+                  //color: HexColor(HexColor.HMD_White),
+                  child: Stack(
+                    children: [
+                      Positioned(
+                          width: 24.w,
+                          height: 24.w,
+                          left: 15.w,
+                          top: 18.w,
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(Radius.circular(12.w)),
+                                color: Colors.green
+                            ),
+                            child: Center(
+                              child: Text("发", style: TextStyle(fontSize: 13.sp, color: HexColor(HexColor.HMD_White)),),
+                            ),
+                          )
                       ),
-                      child: Center(
-                        child: Text("发", style: TextStyle(fontSize: 13.sp, color: HexColor(HexColor.HMD_White)),),
+                      Positioned(
+                          left: 55.w,
+                          top: 15.w,
+                          right: 15.w,
+                          child: GestureDetector(
+                            child: RichText(
+                              text: _faSpan,
+                              maxLines: 3,
+                            ),
+                            onTap: (){
+                              Application.router.navigateTo(context, Routes.selectLocation+"?type=1",transition: TransitionType.native).then((value)
+                              {
+                                _faModel = value;
+                                _faSpan = TextSpan(text: _faModel.adress,style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_333333)),
+                                    children: <TextSpan>[
+                                      TextSpan(text: '\n'+_faModel.name+"    "+_faModel.mobile,style: TextStyle(fontSize: 13.sp, color: HexColor(HexColor.HMD_999999))),
+                                    ]
+                                );
+                                setState(() {});
+                              });
+                            },
+                          )
                       ),
-                    )
-                ),
-                Positioned(
-                  left: 55.w,
-                    top: 15.w,
-                    right: 15.w,
-                    child: GestureDetector(
-                      child: RichText(
-                        text: TextSpan(text: '银泰国际',style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_333333)),
-                            children: <TextSpan>[
-                              TextSpan(text: '\n15633671843',style: TextStyle(fontSize: 13.sp, color: HexColor(HexColor.HMD_999999))),
-                            ]
-                        ),
-                        maxLines: 2,
+                      Positioned(
+                          left: 50.w,
+                          top: 90.w,
+                          right: 15.w,
+                          child: Divider(
+                            color: HexColor(HexColor.HMD_DCDCDC),
+                            height: 1,
+                          )
                       ),
-                      onTap: (){
-                        Application.router.navigateTo(context, Routes.selectLocation, transition: TransitionType.native);
-                      },
-                    )
-                ),
-                Positioned(
-                    left: 50.w,
-                    top: 60.w,
-                    right: 15.w,
-                    child: Divider(
-                      color: HexColor(HexColor.HMD_DCDCDC),
-                      height: 1,
-                    )
-                ),
-                Positioned(
-                    width: 24.w,
-                    height: 24.w,
-                    left: 15.w,
-                    top: 78.w,
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(12.w)),
-                          color: Colors.red
+                      Positioned(
+                          width: 24.w,
+                          height: 24.w,
+                          left: 15.w,
+                          top: 108.w,
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(Radius.circular(12.w)),
+                                color: Colors.red
+                            ),
+                            child: Center(
+                              child: Text("收", style: TextStyle(fontSize: 13.sp, color: HexColor(HexColor.HMD_White)),),
+                            ),
+                          )
                       ),
-                      child: Center(
-                        child: Text("收", style: TextStyle(fontSize: 13.sp, color: HexColor(HexColor.HMD_White)),),
-                      ),
-                    )
-                ),
-                Positioned(
-                    left: 55.w,
-                    top: 75.w,
-                    right: 15.w,
-                    child: GestureDetector(
-                      child: RichText(
-                        text: TextSpan(text: '银泰国际',style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_333333)),
-                            children: <TextSpan>[
-                              TextSpan(text: '\n15633671843',style: TextStyle(fontSize: 13.sp, color: HexColor(HexColor.HMD_999999))),
-                            ]
-                        ),
-                        maxLines: 2,
-                      ),
-                      onTap: (){
+                      Positioned(
+                          left: 55.w,
+                          top: 105.w,
+                          right: 15.w,
+                          child: GestureDetector(
+                            child: RichText(
+                              text: _shouSpan,
+                              maxLines: 3,
+                            ),
+                            onTap: (){
+                              Application.router.navigateTo(context, Routes.selectLocation+"?type=2",transition: TransitionType.native).then((value) {
 
-                        print("222222");
-                      },
-                    )
+                                _shouModel = value;
+                                _shouSpan = TextSpan(text: _shouModel.adress,style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_333333)),
+                                    children: <TextSpan>[
+                                      TextSpan(text: '\n'+_shouModel.name+"    "+_shouModel.mobile,style: TextStyle(fontSize: 13.sp, color: HexColor(HexColor.HMD_999999))),
+                                    ]
+                                );
+                                setState(() {});
+                              });
+                            },
+                          )
+                      ),
+                      Positioned(
+                          left: 15.w,
+                          top: 180.w,
+                          right: 15.w,
+                          child: Divider(
+                            color: HexColor(HexColor.HMD_DCDCDC),
+                            height: 1,
+                          )
+                      ),
+                      Positioned(
+                          left: 15.w,
+                          top: 200.w,
+                          width: 100.w,
+                          height: 30.h,
+                          child: Center(
+                            child: Text("装货起止时间:",style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_333333)),),
+                          )
+                      ),
+                      Positioned(
+                          left: 120.w,
+                          top: 200.w,
+                          width: 200.w,
+                          height: 30.h,
+                          child: OutlinedButton(
+                            style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Color(0xffffffff)))),
+                            child: Text("请选择时间",
+                              style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_666666)),
+                              textAlign: TextAlign.left,
+                            ),
+                            onPressed: (){
+                              _showDatePicker(DateTime.now());
+                            },
+                          )
+                      ),
+
+                    ],
+                  ),
                 ),
-
-
+                SizedBox(
+                  height: 30.h,
+                ),
+                Container(
+                  height: 40.h,
+                  width: 170.w,
+                  child: ElevatedButton(
+                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(HexColor(HexColor.HMD_1A70FB))),
+                    child: Text("发货"),
+                    onPressed: (){
+                      _submitSendGoodsData();
+                    },
+                  ),
+                )
 
               ],
-            ),
-          )
+            )
 
 
+
+          ),
+          SliverList(delegate: SliverChildBuilderDelegate((content,index){
+
+
+          }))
         ],
       ),
 
     );
+  }
+
+  //DateTime _dateTime=DateTime.now();
+
+  // 显示时间的方法
+  void _showDatePicker(DateTime _dateTime){
+
+    DatePicker.showDatePicker(
+      context,
+      onMonthChangeStartWithFirstDate: true,
+
+      // 如果报错提到 DateTimePickerTheme 有问题，点开这个类的原文件作如下修改。
+      // 移除'with DiagnosticableMixin'或者将'DiagnosticableMixin'改成'Diagnosticable'.
+      pickerTheme: DateTimePickerTheme(
+          showTitle: true,
+          confirm: Text('确认', style: TextStyle(color: Colors.red)),
+          cancel: Text('取消',style:TextStyle(color:Colors.cyan)),
+          //title: Text("开始时间",style: TextStyle(color: Colors.red)),
+      ),
+
+      //minDateTime: _dateTime,
+      //maxDateTime: DateTime.parse("2050-1-1"),
+      initialDateTime: _dateTime,
+      dateFormat:'M月-d日 H时:m分',
+      pickerMode: DateTimePickerMode.datetime,
+      locale: DateTimePickerLocale.zh_cn,
+
+      onConfirm: (dateTime, List<int> index) {
+
+        String time = formatDate(dateTime, [m,"-",d," ",H,":",n]);
+        setState(() {});
+      },
+    );
+  }
+
+  //提交发货数据
+  void _submitSendGoodsData() {
+
+
   }
 
   @override
