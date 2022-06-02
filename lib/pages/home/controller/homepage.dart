@@ -32,10 +32,11 @@ class _MineState extends State<HomePage>
   late ConsignorModel _shouModel;
   late InlineSpan _faSpan;
   late InlineSpan _shouSpan;
-  String beginTime = "";
-  String endTime = "";
-  String beginTimeShow = "";
-  String endTimeShow = "";
+  String _beginTime = "";
+  String _endTime = "";
+  final TextEditingController _priceCtrl = TextEditingController();
+  // String beginTimeShow = "";
+  // String endTimeShow = "";
   
   @override
   void initState() {
@@ -238,23 +239,61 @@ class _MineState extends State<HomePage>
                           width: 100.w,
                           height: 30.h,
                           child: Center(
-                            child: Text("装货起止时间:",style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_333333)),),
+                            child: Text("装货起止时间:",style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold, color: HexColor(HexColor.HMD_333333)),),
                           )
                       ),
                       Positioned(
                           left: 120.w,
                           top: 200.w,
-                          width: 200.w,
+                          right: 5.w,
                           height: 30.h,
                           child: OutlinedButton(
-                            style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Color(0xffffffff)))),
-                            child: Text("请选择时间",
-                              style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_666666)),
-                              textAlign: TextAlign.left,
+                            style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Color(0xffffffff))), alignment: Alignment.centerLeft),
+                            child:
+                            // Align(
+                            //   alignment: Alignment.centerLeft,
+                            //   child: Text("请选择时间",
+                            //     style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_666666)),
+                            //     textAlign: TextAlign.left,
+                            //   ),
+                            // ),
+                            Text( _beginTime.isEmpty&&_endTime.isEmpty ? "请选择时间":_beginTime + " ~ " + _endTime,
+                              style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w400, color: HexColor(HexColor.HMD_666666))
                             ),
                             onPressed: (){
-                              _showDatePicker(DateTime.now());
+                              _showBeginDatePicker(DateTime.now());
                             },
+                          )
+                      ),
+                      Positioned(
+                          left: 15.w,
+                          top: 250.w,
+                          width: 100.w,
+                          height: 30.h,
+                          child: Center(
+                            child: Text("运   单  价  格:",style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold, color: HexColor(HexColor.HMD_333333)),),
+                          )
+                      ),
+                      Positioned(
+                          left: 120.w,
+                          top: 250.w,
+                          width: 170.w,
+                          height: 30.h,
+                          child: TextField(
+                            //textAlignVertical: TextAlignVertical.center,
+                            controller: _priceCtrl,
+                            style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_333333)),
+                            keyboardType: TextInputType.number,
+                            textAlign: TextAlign.start,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.only(left: 10, top: 0, right: 0, bottom: 0),
+                              //contentPadding: EdgeInsets.all(0),
+                              border:OutlineInputBorder(
+                                borderSide: BorderSide(width: 1, color: HexColor(HexColor.HMD_F7F7F7)),
+                                borderRadius: BorderRadius.all(Radius.circular(5.w))
+                              ),
+                              hintText: "请输入运单价格",
+                            ),
                           )
                       ),
 
@@ -294,9 +333,10 @@ class _MineState extends State<HomePage>
 
   //DateTime _dateTime=DateTime.now();
 
-  // 显示时间的方法
-  void _showDatePicker(DateTime _dateTime){
+  // 选择开始时间
+  void _showBeginDatePicker(DateTime _dateTime){
 
+    DateTime beginDateTime = _dateTime;
     DatePicker.showDatePicker(
       context,
       onMonthChangeStartWithFirstDate: true,
@@ -318,8 +358,42 @@ class _MineState extends State<HomePage>
       locale: DateTimePickerLocale.zh_cn,
 
       onConfirm: (dateTime, List<int> index) {
+        beginDateTime = dateTime;
+        _beginTime = formatDate(dateTime, [mm,".",dd," ",HH,":",nn]);
+        setState(() {});
+      },
+      onClose: () {
+        _showEndDatePicker(beginDateTime);
+      }
+    );
+  }
 
-        String time = formatDate(dateTime, [m,"-",d," ",H,":",n]);
+  // 选择结束时间
+  void _showEndDatePicker(DateTime _dateTime){
+
+    DatePicker.showDatePicker(
+      context,
+      onMonthChangeStartWithFirstDate: true,
+
+      // 如果报错提到 DateTimePickerTheme 有问题，点开这个类的原文件作如下修改。
+      // 移除'with DiagnosticableMixin'或者将'DiagnosticableMixin'改成'Diagnosticable'.
+      pickerTheme: DateTimePickerTheme(
+        showTitle: true,
+        confirm: Text('确认', style: TextStyle(color: Colors.red)),
+        cancel: Text('取消',style:TextStyle(color:Colors.cyan)),
+        //title: Text("开始时间",style: TextStyle(color: Colors.red)),
+      ),
+
+      minDateTime: _dateTime,
+      //maxDateTime: DateTime.parse("2050-1-1"),
+      initialDateTime: _dateTime,
+      dateFormat:'M月-d日 H时:m分',
+      pickerMode: DateTimePickerMode.datetime,
+      locale: DateTimePickerLocale.zh_cn,
+
+      onConfirm: (dateTime, List<int> index) {
+        _endTime = formatDate(dateTime, [mm,".",dd," ",HH,":",nn]);
+        print(_endTime);
         setState(() {});
       },
     );
