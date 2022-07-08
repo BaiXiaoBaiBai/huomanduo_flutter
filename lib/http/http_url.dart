@@ -11,11 +11,8 @@ class HttpUrl {
 
   static const String userConfig_url = 'mobile/Userconfig';
 
-  //static const String baseUrl = 'http://shounabar.com/';
   static const String baseUrl = 'http://39.100.138.157:9090/';
-
-  //static const String baseUrl = 'http://192.168.10.230:9090/';
-
+  
   static const String amap_regeoGeocode_URL = 'https://restapi.amap.com/v3/geocode/regeo';//高德地图web逆地理编码
 
   static const String userLogin_URL = 'user/user-login';
