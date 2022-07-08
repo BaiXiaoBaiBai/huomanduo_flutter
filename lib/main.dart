@@ -62,20 +62,6 @@ class _MyAppState extends State<MyApp> {
                 home: IndexPage(),
               )
           );
-          //   MaterialApp(
-          //   debugShowCheckedModeBanner: false,
-          //   title: "货满多货主",
-          //   //theme: ThemeData(primaryColor: Colors.white),
-          //   //debugShowCheckedModeBanner: false,
-          //   //darkTheme: ThemeData.light(),
-          //   theme: ThemeData(
-          //       primarySwatch: Colors.green,
-          //       splashColor: Colors.transparent,
-          //       highlightColor: Colors.transparent
-          //   ),
-          //   onGenerateRoute: Application.router.generator, //全局注册
-          //   home: IndexPage(),
-          // );
         },
     );
 
