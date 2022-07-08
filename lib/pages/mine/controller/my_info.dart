@@ -18,6 +18,7 @@ import '../../../gen_a/A.dart';
 import '../../../http/base_model.dart';
 import '../../../http/http_url.dart';
 import '../../../utils/app_event.dart';
+import '../../home/view/input_done_view.dart';
 import '../model/user_model.dart';
 
 class MyInfoPage extends StatefulWidget {
@@ -32,6 +33,8 @@ class _MyInfoState extends State<MyInfoPage>
   late Image _iconImage;
   late String _imagePath;
   final TextEditingController _userNameCtrl = TextEditingController();
+  InputDoneView _inputDoneView = InputDoneView();
+  FocusNode _hideFocusNode = FocusNode();
 
   void initState() {
     _userModel = UserModel(
@@ -47,6 +50,16 @@ class _MyInfoState extends State<MyInfoPage>
     //   fit: BoxFit.cover,
     // ) as Image;
     _requestUserInfo();
+
+    _hideFocusNode.addListener(() {
+      if (_hideFocusNode.hasFocus) {
+        //_showOverlay(context);
+        _inputDoneView.showOverlay(context);
+      } else {
+        //_removeOverlay();
+        _inputDoneView.removeOverlay();
+      }
+    });
   }
 
   Future _requestUserInfo() async {
@@ -219,6 +232,7 @@ class _MyInfoState extends State<MyInfoPage>
               left: 100.w,
               child: TextField(
                 controller: _userNameCtrl,
+                focusNode: _hideFocusNode,
                 style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_333333)),
                 keyboardType: TextInputType.text,
                 textAlign: TextAlign.end,

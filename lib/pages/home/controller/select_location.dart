@@ -21,6 +21,7 @@ import '../../../http/base_model.dart';
 import '../../../http/http_request.dart';
 import '../../../http/http_url.dart';
 import '../../../utils/toast_util.dart';
+import '../view/input_done_view.dart';
 
 class SelectLocation extends StatefulWidget {
 
@@ -47,6 +48,10 @@ class _SelectLocationState extends State<SelectLocation>
   final TextEditingController _addressCtrl = TextEditingController();
   String _addressStr = "";
   late int _type;
+  InputDoneView _inputDoneView = InputDoneView();
+  FocusNode _peopleFocusNode = FocusNode();
+  FocusNode _mobileFocusNode = FocusNode();
+  FocusNode _addressFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -69,6 +74,30 @@ class _SelectLocationState extends State<SelectLocation>
       _addressStr =  event["address"].toString();
       setState(() {});
       _toCurrentLocation(_currentLat, _currentLng);
+    });
+
+    _peopleFocusNode.addListener(() {
+      if (_peopleFocusNode.hasFocus) {
+        _inputDoneView.showOverlay(context);
+      } else {
+        _inputDoneView.removeOverlay();
+      }
+    });
+
+    _mobileFocusNode.addListener(() {
+      if (_mobileFocusNode.hasFocus) {
+        _inputDoneView.showOverlay(context);
+      } else {
+        _inputDoneView.removeOverlay();
+      }
+    });
+
+    _addressFocusNode.addListener(() {
+      if (_addressFocusNode.hasFocus) {
+        _inputDoneView.showOverlay(context);
+      } else {
+        _inputDoneView.removeOverlay();
+      }
     });
   }
 
@@ -273,6 +302,7 @@ class _SelectLocationState extends State<SelectLocation>
                           controller: _peopleCtrl,
                           style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_666666)),
                           keyboardType: TextInputType.text,
+                          focusNode: _peopleFocusNode,
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: "联系人(必填)",
@@ -298,6 +328,7 @@ class _SelectLocationState extends State<SelectLocation>
                           controller: _mobileCtrl,
                           style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_666666)),
                           keyboardType: TextInputType.phone,
+                          focusNode: _mobileFocusNode,
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: "手机号(必填)",
@@ -324,6 +355,7 @@ class _SelectLocationState extends State<SelectLocation>
                       controller: _addressCtrl,
                       style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_666666)),
                       keyboardType: TextInputType.text,
+                      focusNode: _addressFocusNode,
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         hintText: "楼层和门牌号(选填)",

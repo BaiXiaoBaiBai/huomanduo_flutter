@@ -74,7 +74,8 @@ dependencies:
   carousel_slider: ^4.0.0
 
   #上拉下拉刷新
-  #pull_to_refresh: ^2.0.0
+  pull_to_refresh: ^2.0.0
+  #flutter_easyrefresh: ^2.2.1
 
   #图片压缩
   #flutter_image_compress: ^1.1.0
@@ -107,6 +108,13 @@ dependencies:
 
   #城市选择器
   flutter_city_picker: ^1.0.4
+
+  #键盘隐藏
+  #keyboard_actions: ^4.0.0
+  #keyboard_actions: ^3.4.7
+
+
+
 
   #百度地图
   #flutter_baidu_mapapi_map: ^3.0.0+2

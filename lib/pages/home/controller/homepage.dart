@@ -1,5 +1,4 @@
 
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
@@ -7,13 +6,19 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:huomanduo_owner/common/base_app_bar.dart';
 import 'package:huomanduo_owner/pages/home/model/consignor_model.dart';
 import 'package:huomanduo_owner/utils/screen_fit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../http/base_model.dart';
+import '../../../http/http_url.dart';
 import '../../../routers/Application.dart';
 import '../../../routers/routers.dart';
 import '../../../utils/hex_color.dart';
 import 'package:flutter_cupertino_datetime_picker/flutter_cupertino_datetime_picker.dart';
 import 'package:date_format/date_format.dart';
 
+import '../../../utils/toast_util.dart';
+import '../view/input_done_view.dart';
+import 'package:huomanduo_owner/http/http_request.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -34,7 +39,13 @@ class _MineState extends State<HomePage>
   late InlineSpan _shouSpan;
   String _beginTime = "";
   String _endTime = "";
+  String _submitBeginTime = "";
+  String _submitEndTime = "";
   final TextEditingController _priceCtrl = TextEditingController();
+  // late OverlayEntry overlayEntry;
+  InputDoneView _inputDoneView = InputDoneView();
+  FocusNode _hideFocusNode = FocusNode();
+
   // String beginTimeShow = "";
   // String endTimeShow = "";
   
@@ -59,11 +70,21 @@ class _MineState extends State<HomePage>
     _faSpan = TextSpan(text: '请选择发货地址',style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_999999)));
     _shouSpan = TextSpan(text: '请选择收货地址',style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_999999)));
 
+    _hideFocusNode.addListener(() {
+      if (_hideFocusNode.hasFocus) {
+        //_showOverlay(context);
+        _inputDoneView.showOverlay(context);
+      } else {
+        //_removeOverlay();
+        _inputDoneView.removeOverlay();
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //resizeToAvoidBottomInset: true,
       appBar: BaseAppBar(
         titleStr: "首页",
         bgColor: Colors.amber,
@@ -279,22 +300,49 @@ class _MineState extends State<HomePage>
                           top: 250.w,
                           width: 170.w,
                           height: 30.h,
-                          child: TextField(
+                          child:
+                          // KeyboardActions(
+                          //   config: _buildConfig(context),
+                          //   //tapOutsideBehavior: TapOutsideBehavior.translucentDismiss,
+                          //   autoScroll: false,
+                          //   keepFocusOnTappingNode: true,
+                          //   child: TextField(
+                          //     //textAlignVertical: TextAlignVertical.center,
+                          //     focusNode: _nodeText1,
+                          //     controller: _priceCtrl,
+                          //     style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_333333)),
+                          //     keyboardType: TextInputType.number,
+                          //     textAlign: TextAlign.start,
+                          //     decoration: InputDecoration(
+                          //       contentPadding: EdgeInsets.only(left: 10, top: 0, right: 0, bottom: 0),
+                          //       //contentPadding: EdgeInsets.all(0),
+                          //       border:OutlineInputBorder(
+                          //           borderSide: BorderSide(width: 1, color: HexColor(HexColor.HMD_F7F7F7)),
+                          //           borderRadius: BorderRadius.all(Radius.circular(5.w))
+                          //       ),
+                          //       hintText: "请输入运单价格",
+                          //     ),
+                          //   ),
+                          // )
+
+                          TextField(
                             //textAlignVertical: TextAlignVertical.center,
                             controller: _priceCtrl,
                             style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_333333)),
                             keyboardType: TextInputType.number,
                             textAlign: TextAlign.start,
+                            focusNode: _hideFocusNode,
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.only(left: 10, top: 0, right: 0, bottom: 0),
                               //contentPadding: EdgeInsets.all(0),
                               border:OutlineInputBorder(
                                 borderSide: BorderSide(width: 1, color: HexColor(HexColor.HMD_F7F7F7)),
-                                borderRadius: BorderRadius.all(Radius.circular(5.w))
+                                borderRadius: BorderRadius.all(Radius.circular(5.w)),
                               ),
                               hintText: "请输入运单价格",
                             ),
                           )
+
                       ),
 
                     ],
@@ -317,9 +365,6 @@ class _MineState extends State<HomePage>
 
               ],
             )
-
-
-
           ),
           SliverList(delegate: SliverChildBuilderDelegate((content,index){
 
@@ -360,6 +405,7 @@ class _MineState extends State<HomePage>
       onConfirm: (dateTime, List<int> index) {
         beginDateTime = dateTime;
         _beginTime = formatDate(dateTime, [mm,".",dd," ",HH,":",nn]);
+        _submitBeginTime = formatDate(dateTime, [yyyy,"-",mm,"-",dd," ",HH,":",nn,":",ss]);
         setState(() {});
       },
       onClose: () {
@@ -393,6 +439,7 @@ class _MineState extends State<HomePage>
 
       onConfirm: (dateTime, List<int> index) {
         _endTime = formatDate(dateTime, [mm,".",dd," ",HH,":",nn]);
+        _submitEndTime = formatDate(dateTime, [yyyy,"-",mm,"-",dd," ",HH,":",nn,":",ss]);
         print(_endTime);
         setState(() {});
       },
@@ -400,8 +447,35 @@ class _MineState extends State<HomePage>
   }
 
   //提交发货数据
-  void _submitSendGoodsData() {
+  Future _submitSendGoodsData() async{
 
+    Map<String,dynamic> params = new Map();
+    SharedPreferences shared = await SharedPreferences.getInstance();
+    params["token"] = shared.getString("token");
+    params["goods_name"] = "饮用水";
+    params["order_price"] = _priceCtrl.text;
+    params["loading_begin_time"] = _submitBeginTime;
+    params["loading_end_time"] = _submitEndTime;
+
+    params["send_latitude"] = _faModel.latitude;
+    params["send_longitude"] = _faModel.longitude;
+    params["send_address"] = _faModel.adress;
+    params["send_name"] = _faModel.name;
+    params["send_mobile"] = _faModel.mobile;
+    params["send_doorplate"] = _faModel.detailAdress;
+
+    params["receive_latitude"] = _shouModel.latitude;
+    params["receive_longitude"] = _shouModel.longitude;
+    params["receive_address"] = _shouModel.adress;
+    params["receive_name"] = _shouModel.name;
+    params["receive_mobile"] = _shouModel.mobile;
+    params["receive_doorplate"] = _shouModel.detailAdress;
+
+    final BaseModel baseModel = await HttpRequest().post(HttpUrl.submitSendGoods_URL, params: params);
+    ToastUtil.show(baseModel.msg);
+    if (baseModel.status == 200) {
+
+    }
 
   }
 

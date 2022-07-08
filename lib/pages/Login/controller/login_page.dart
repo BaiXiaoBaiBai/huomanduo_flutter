@@ -1,5 +1,4 @@
 
-
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../http/base_model.dart';
 import '../../../http/http_request.dart';
 import '../../../http/http_url.dart';
+import '../../home/view/input_done_view.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -23,8 +23,27 @@ class _LoginState extends State<LoginPage>
 
   final TextEditingController _mobileCtrl = TextEditingController();
   final TextEditingController _pwdCtrl = TextEditingController();
+  InputDoneView _inputDoneView = InputDoneView();
+  FocusNode _mobileFocusNode = FocusNode();
+  FocusNode _pwdFocusNode = FocusNode();
 
   void initState() {
+
+    _mobileFocusNode.addListener(() {
+      if (_mobileFocusNode.hasFocus) {
+        _inputDoneView.showOverlay(context);
+      } else {
+        _inputDoneView.removeOverlay();
+      }
+    });
+
+    _pwdFocusNode.addListener(() {
+      if (_pwdFocusNode.hasFocus) {
+        _inputDoneView.showOverlay(context);
+      } else {
+        _inputDoneView.removeOverlay();
+      }
+    });
 
   }
 
@@ -78,6 +97,7 @@ class _LoginState extends State<LoginPage>
                     right: 15.w,
                     child: TextField(
                       controller: _mobileCtrl,
+                      focusNode: _mobileFocusNode,
                       style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_666666)),
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
@@ -111,6 +131,7 @@ class _LoginState extends State<LoginPage>
                     right: 15.w,
                     child: TextField(
                       controller: _pwdCtrl,
+                      focusNode: _pwdFocusNode,
                       style: TextStyle(fontSize: 15.sp, color: HexColor(HexColor.HMD_666666)),
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(

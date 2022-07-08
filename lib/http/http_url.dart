@@ -9,12 +9,12 @@ class HttpUrl {
 
   static const String BASE_TOKEN = "";
 
-  //static const String baseUrl = 'http://47.93.220.253/index.php/';
-
   static const String userConfig_url = 'mobile/Userconfig';
 
-  static const String baseUrl = 'http://shounabar.com/';
-  //static const String baseUrl = 'http://localhost:9090/';
+  //static const String baseUrl = 'http://shounabar.com/';
+  static const String baseUrl = 'http://39.100.138.157:9090/';
+
+  //static const String baseUrl = 'http://192.168.10.230:9090/';
 
   static const String amap_regeoGeocode_URL = 'https://restapi.amap.com/v3/geocode/regeo';//高德地图web逆地理编码
 
@@ -22,5 +22,7 @@ class HttpUrl {
   static const String userInfo_URL = 'user/user-info';
   static const String editUser_URL = 'user/edit-user';
 
+  static const String submitSendGoods_URL = 'order/saveOrder';
+  static const String orderList_URL = 'order/queryAllOrder';
 
 }

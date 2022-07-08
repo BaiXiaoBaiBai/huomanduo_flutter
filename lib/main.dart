@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:huomanduo_owner/pages/index_page.dart';
 import 'package:huomanduo_owner/routers/Application.dart';
 import 'package:huomanduo_owner/routers/routers.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 void main() {
 
@@ -32,50 +33,50 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    // ScreenUtil.init(
-    //   BoxConstraints(
-    //     maxWidth: MediaQuery.of(context).size.width,
-    //     maxHeight: MediaQuery.of(context).size.height
-    //   ),
-    //   designSize: Size(750, 1334),
-    //   context: context,
-    //   minTextAdapt: true,
-    //   orientation: Orientation.portrait
-    // );
-
-    // return  MaterialApp(
-    //   debugShowCheckedModeBanner: false,
-    //   title: "货满多货主",
-    //   //theme: ThemeData(primaryColor: Colors.white),
-    //   //debugShowCheckedModeBanner: false,
-    //   //darkTheme: ThemeData.light(),
-    //   theme: ThemeData(
-    //       primarySwatch: Colors.green,
-    //       splashColor: Colors.transparent,
-    //       highlightColor: Colors.transparent
-    //   ),
-    //   onGenerateRoute: Application.router.generator, //全局注册
-    //   home: IndexPage(),
-    // );
 
     return ScreenUtilInit(
       splitScreenMode: true,
         // designSize: Size(750, 1334),
         designSize: Size(375, 667),
-        builder: ()=>MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: "货满多货主",
-          //theme: ThemeData(primaryColor: Colors.white),
-          //debugShowCheckedModeBanner: false,
-          //darkTheme: ThemeData.light(),
-          theme: ThemeData(
-              primarySwatch: Colors.green,
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent
-          ),
-          onGenerateRoute: Application.router.generator, //全局注册
-          home: IndexPage(),
-        )
+        builder: (context, child) {
+          return RefreshConfiguration(
+              headerBuilder: () => WaterDropHeader(),
+              footerBuilder: () => ClassicFooter(
+                loadingText: "加载中...",
+                idleText: "下拉加载",
+                canLoadingText: "松开开始加载数据",
+              ),
+              hideFooterWhenNotFull: true,
+              child: MaterialApp(
+                debugShowCheckedModeBanner: false,
+                title: "货满多货主",
+                //theme: ThemeData(primaryColor: Colors.white),
+                //debugShowCheckedModeBanner: false,
+                //darkTheme: ThemeData.light(),
+                theme: ThemeData(
+                    primarySwatch: Colors.green,
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent
+                ),
+                onGenerateRoute: Application.router.generator, //全局注册
+                home: IndexPage(),
+              )
+          );
+          //   MaterialApp(
+          //   debugShowCheckedModeBanner: false,
+          //   title: "货满多货主",
+          //   //theme: ThemeData(primaryColor: Colors.white),
+          //   //debugShowCheckedModeBanner: false,
+          //   //darkTheme: ThemeData.light(),
+          //   theme: ThemeData(
+          //       primarySwatch: Colors.green,
+          //       splashColor: Colors.transparent,
+          //       highlightColor: Colors.transparent
+          //   ),
+          //   onGenerateRoute: Application.router.generator, //全局注册
+          //   home: IndexPage(),
+          // );
+        },
     );
 
   }
